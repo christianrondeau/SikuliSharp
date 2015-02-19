@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 
 namespace SikuliSharp
@@ -19,10 +20,27 @@ namespace SikuliSharp
 
 		public bool Exists(IPattern pattern)
 		{
+			return RunCommand("exists", pattern);
+		}
+
+		public bool Click(IPattern pattern)
+		{
+			return RunCommand("click", pattern);
+		}
+
+		private bool RunCommand(string command, IPattern pattern)
+		{
 			string consoleOutput;
 			using (var project = new TemporarySikuliProject())
 			{
-				File.WriteAllText(project.ScriptPath, string.Format("if exists({0}): print \"YES\"", pattern.ToSikuliScript()));
+				var script = string.Format("if {0}({1}): print \"YES\"\nelse: print \"NO\"", command, pattern.ToSikuliScript());
+
+				#if(DEBUG)
+				Debug.WriteLine("Script Output:");
+				Debug.WriteLine(script);
+				#endif
+
+				File.WriteAllText(project.ScriptPath, script);
 
 				consoleOutput = _exec.ExecuteProject(project.ProjectPath);
 			}

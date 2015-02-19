@@ -51,6 +51,12 @@ namespace SikuliSharp
 				var output =  stdOutput.ToString();
 				if(output.StartsWith("[error]"))
 					throw new Exception(output);
+
+				#if(DEBUG)
+				Debug.WriteLine("Command Output:");
+				Debug.WriteLine(output);
+				#endif
+
 				return output;
 			}
 
