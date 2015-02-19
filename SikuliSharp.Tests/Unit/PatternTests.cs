@@ -8,7 +8,7 @@ namespace SikuliSharp.Tests.Unit
 		[Test]
 		public void CanCreateFilePattern()
 		{
-			Assert.That(Pattern.FromFile(@"C:\Test.png"), Is.TypeOf<FilePattern>());
+			Assert.That(Patterns.FromFile(@"C:\Test.png"), Is.TypeOf<FilePattern>());
 		}
 	}
 }

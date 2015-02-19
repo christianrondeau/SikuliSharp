@@ -21,12 +21,19 @@ namespace SikuliSharp.Tests
 		[Test]
 		public void CanClickOnAButtonAndDetectStateChange()
 		{
-			var process = StartTestApplication();
+			Process process = null;
 
+			try
+			{
+				process = StartTestApplication();
 
-			Assert.That(_sikuli.Exists(Pattern.FromFile(Path.Combine(_binPath, "Patterns", "RedLabel.png"))), Is.True);
-
-			process.CloseMainWindow();
+				Assert.That(_sikuli.Exists(Patterns.FromFile(Path.Combine(_binPath, "Patterns", "RedLabel.png"))), Is.True);
+			}
+			finally
+			{
+				if (process != null)
+					process.CloseMainWindow();
+			}
 		}
 
 		private Process StartTestApplication()

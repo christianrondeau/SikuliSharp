@@ -2,5 +2,6 @@
 {
 	public interface IPattern
 	{
+		string ToSikuliScript();
 	}
 }
