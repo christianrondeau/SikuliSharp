@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Media;
 
 [assembly: AssemblyTitle("SikuliSharp.TestApplication")]
 [assembly: AssemblyDescription("A C# Wrapper for Sikuli")]
@@ -12,6 +13,8 @@ using System.Windows;
 [assembly: AssemblyCulture("")]
 
 [assembly: ComVisible(false)]
+
+[assembly: DisableDpiAwareness]
 
 [assembly: ThemeInfo(
 	ResourceDictionaryLocation.None,

@@ -1,9 +1,9 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 
 namespace SikuliSharp.Tests.Unit
 {
 	[TestFixture]
-	public class PatternTests
+	public class PatternsTests
 	{
 		[Test]
 		public void CanCreateFilePattern()

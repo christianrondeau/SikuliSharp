@@ -39,13 +39,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IPattern.cs" />
-    <Compile Include="ISikuli.cs" />
-    <Compile Include="Pattern.cs" />
+    <Compile Include="AsyncTwoWayStreamsHandler.cs" />
+    <Compile Include="Patterns.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sikuli.cs" />
-    <Compile Include="SikuliExec.cs" />
-    <Compile Include="TemporarySikuliProject.cs" />
+    <Compile Include="SikuliRuntime.cs" />
+    <Compile Include="SikuliSession.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

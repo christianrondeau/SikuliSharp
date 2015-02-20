@@ -13,6 +13,12 @@ namespace SikuliSharp
 		}
 	}
 
+	public interface IPattern
+	{
+		void Validate();
+		string ToSikuliScript();
+	}
+
 	public class FilePattern : IPattern
 	{
 		private readonly string _path;
@@ -27,11 +33,14 @@ namespace SikuliSharp
 			_similarity = similarity;
 		}
 
-		public string ToSikuliScript()
+		public void Validate()
 		{
 			if (!File.Exists(_path))
-				throw new FileNotFoundException("Could not find image file specified in pattern", _path);
+				throw new FileNotFoundException("Could not find image file specified in pattern: " + _path, _path);
+		}
 
+		public string ToSikuliScript()
+		{
 			return string.Format("Pattern(\"{0}\").similar({1})", _path.Replace(@"\", @"\\"), _similarity);
 		}
 	}
