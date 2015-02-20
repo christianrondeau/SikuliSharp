@@ -14,15 +14,22 @@ namespace SikuliSharp
 	{
 		public string ExecuteProject(string projectPath)
 		{
-			//TODO: Check for JAVA_HOME,  java in PATH or throw
-			//TODO: Find the SIKULI_HOME path, or dynamically install
-			//TODO: Run in interactive mode for faster feedback (instead of launching for every action)
-			const string sikuliHome = @"E:\Dev\Tools\SikuliX";
+			var javaHome = GetPathEnvironmentVariable("JAVA_HOME");
+			var sikuliHome = GetPathEnvironmentVariable("SIKULI_HOME");
+
 			var sikuliScriptJarPath = Path.Combine(sikuliHome, "sikuli-script.jar");
-			return RunExternalExe("java", " -jar \"" + sikuliScriptJarPath + "\" -r \"" + projectPath + "\"");
+			return RunExternalExe(Path.Combine(javaHome, "bin", "java"), " -jar \"" + sikuliScriptJarPath + "\" -r \"" + projectPath + "\"");
 		}
 
-		public string RunExternalExe(string filename, string arguments)
+		private string GetPathEnvironmentVariable(string name)
+		{
+			var value = Environment.GetEnvironmentVariable(name);
+			if (String.IsNullOrEmpty(value)) throw new Exception(string.Format("Environment variables {0} not set", name));
+			if (!Directory.Exists(value)) throw new Exception(string.Format("Environment variables {0} is set to a directory that does not exist: {1}", name, value));
+			return value;
+		}
+
+		private string RunExternalExe(string filename, string arguments)
 		{
 			var process = new Process
 			{
@@ -48,14 +55,14 @@ namespace SikuliSharp
 
 			if (process.ExitCode == 0)
 			{
-				var output =  stdOutput.ToString();
-				if(output.StartsWith("[error]"))
+				var output = stdOutput.ToString();
+				if (output.StartsWith("[error]"))
 					throw new Exception(output);
 
-				#if(DEBUG)
+#if(DEBUG)
 				Debug.WriteLine("Command Output:");
 				Debug.WriteLine(output);
-				#endif
+#endif
 
 				return output;
 			}
