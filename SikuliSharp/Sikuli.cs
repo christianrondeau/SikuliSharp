@@ -10,7 +10,7 @@ namespace SikuliSharp
 			return new SikuliSession(
 				new SikuliRuntime(
 					new AsyncDuplexStreamsHandlerFactory(),
-					new SikuliScriptProcessFactoryFactory()
+					new SikuliScriptProcessFactory()
 					)
 				);
 		}
@@ -22,7 +22,7 @@ namespace SikuliSharp
 			if(!Directory.Exists(projectPath))
 				throw new DirectoryNotFoundException(string.Format("Project not found in path '{0}'", projectPath));
 
-			var processFactory = new SikuliScriptProcessFactoryFactory();
+			var processFactory = new SikuliScriptProcessFactory();
 			using (var process = processFactory.Start(string.Format("-r {0}", projectPath)))
 			{
 				var output = process.StandardOutput.ReadToEnd();

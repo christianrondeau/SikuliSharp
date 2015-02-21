@@ -11,9 +11,8 @@ There are already existing wrappers, [sikuli-integrator](https://code.google.com
 Check these steps first:
 
 1. [Download Java](http://java.com/en/download/)
-2. Create an environment variable `JAVA_HOME` that points to your Java folder (e.g. `C:\Program Files (x86)\Java\jre1.8.0_31`)
-3. [Download Sikuli](https://launchpad.net/sikuli/+download), [install it](http://www.sikulix.com/quickstart.html) and make sure to select the option to run scripts from command line
-4. Create an environment variable `SIKULI_HOME` that points to your Sikuli install folder
+2. [Download Sikuli](https://launchpad.net/sikuli/+download), [install it](http://www.sikulix.com/quickstart.html) and make sure to select the option to run scripts from command line
+3. Create an environment variable `SIKULI_HOME` that points to your Sikuli install folder
 
 Here is a simple example using [NUnit](http://www.nunit.org/):
 
