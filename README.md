@@ -11,7 +11,7 @@ There are already existing wrappers, [sikuli-integrator](https://code.google.com
 Check these steps first:
 
 1. [Download Java](http://java.com/en/download/)
-2. [Download Sikuli](https://launchpad.net/sikuli/+download), then [install it](http://www.sikulix.com/quickstart.html)
+2. [Download Sikuli 1.0.1](https://launchpad.net/sikuli/sikulix/1.0.1), then [install it](http://www.sikulix.com/quickstart.html)
    Select the option to run scripts from command line - the file `sikuli-scripts.jar` must be installed
 3. Create an environment variable `SIKULI_HOME` that points to your Sikuli install folder
 
