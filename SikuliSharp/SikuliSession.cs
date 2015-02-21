@@ -1,4 +1,5 @@
 using System;
+using System.Text.RegularExpressions;
 
 namespace SikuliSharp
 {
@@ -7,10 +8,13 @@ namespace SikuliSharp
 		bool Exists(IPattern pattern, float timeoutInSeconds = 0);
 		bool Click(IPattern pattern, float timeoutInSeconds = 0);
 		bool Wait(IPattern pattern, float timeoutInSeconds = 0);
+		bool WaitVanish(IPattern pattern, float timeoutInSeconds = 0);
+		bool Type(string text);
 	}
 
 	public class SikuliSession : ISikuliSession
 	{
+		private static readonly Regex InvalidTextRegex = new Regex(@"[\r\n\t\x00-\x1F]", RegexOptions.Compiled);
 		private readonly ISikuliRuntime _runtime;
 
 		public SikuliSession(ISikuliRuntime sikuliRuntime)
@@ -32,6 +36,25 @@ namespace SikuliSharp
 		public bool Wait(IPattern pattern, float timeoutInSeconds = 0f)
 		{
 			return RunCommand("wait", pattern, timeoutInSeconds);
+		}
+
+		public bool WaitVanish(IPattern pattern, float timeoutInSeconds = 0f)
+		{
+			return RunCommand("waitVanish", pattern, timeoutInSeconds);
+		}
+
+		public bool Type(string text)
+		{
+			if(InvalidTextRegex.IsMatch(text))
+				throw new ArgumentException("Text cannot contain control characters. Escape them before, e.g. \\n should be \\\\n", "text");
+
+			var script = string.Format(
+				"print \"SIKULI#: YES\" if type(\"{0}\") == 1 else \"SIKULI#: NO\"",
+				text
+				);
+
+			var result = _runtime.Run(script, "SIKULI#: ", 0d);
+			return result.Contains("SIKULI#: YES");
 		}
 
 		private bool RunCommand(string command, IPattern pattern, float timeoutInSeconds)

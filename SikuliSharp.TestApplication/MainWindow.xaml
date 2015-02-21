@@ -1,7 +1,8 @@
 ﻿<Window x:Class="SikuliSharp.TestApplication.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Sikuli Test Application" Height="350" Width="525">
+        Title="Sikuli Test Application" Height="350" Width="525"
+        KeyDown="MainWindow_OnKeyDown">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />

@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Timers;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 
@@ -10,13 +10,14 @@ namespace SikuliSharp.TestApplication
 	{
 		private DateTime _timerStart;
 		private readonly DispatcherTimer _timer;
+		private Action _timerTickAction;
 
 		public MainWindow()
 		{
 			InitializeComponent();
 
 			_timer = new DispatcherTimer();
-			_timer.Tick += _timer_Tick;
+			_timer.Tick += (o, e) => _timerTickAction();
 		}
 
 		private void TestButton_OnClick(object sender, RoutedEventArgs e)
@@ -26,25 +27,53 @@ namespace SikuliSharp.TestApplication
 			StateLabel.Background = Brushes.SlateGray;
 			StateLabel.Content = "5";
 
+			_timerTickAction = () =>
+			{
+				var elapsed = DateTime.Now - _timerStart;
+
+				if (elapsed.TotalSeconds >= 5)
+				{
+					_timer.Stop();
+
+					StateLabel.Background = Brushes.Green;
+					StateLabel.Content = "Clicked!";
+				}
+				else
+				{
+					StateLabel.Content = (5 - elapsed.TotalSeconds).ToString("0.00");
+				}
+			};
+
 			_timerStart = DateTime.Now;
 			_timer.Interval = TimeSpan.FromMilliseconds(50);
 			_timer.Start();
 		}
 
-		private void _timer_Tick(object sender, EventArgs eventArgs)
+		private void MainWindow_OnKeyDown(object sender, KeyEventArgs e)
 		{
-			var elapsed = DateTime.Now - _timerStart;
-
-			if (elapsed.TotalSeconds >= 5)
+			if (e.Key == Key.X)
 			{
-				_timer.Stop();
+				TestButton.Foreground = Brushes.SlateGray;
+				TestButton.Content = "5";
 
-				StateLabel.Background = Brushes.Green;
-				StateLabel.Content = "Clicked!";
-			}
-			else
-			{
-				StateLabel.Content = (5 - elapsed.TotalSeconds).ToString("0.00");
+				_timerTickAction = () =>
+				{
+					var elapsed = DateTime.Now - _timerStart;
+
+					if (elapsed.TotalSeconds >= 5)
+					{
+						_timer.Stop();
+						Application.Current.Shutdown();
+					}
+					else
+					{
+						TestButton.Content = (5 - elapsed.TotalSeconds).ToString("0.00");
+					}
+				};
+
+				_timerStart = DateTime.Now;
+				_timer.Interval = TimeSpan.FromMilliseconds(50);
+				_timer.Start();
 			}
 		}
 	}

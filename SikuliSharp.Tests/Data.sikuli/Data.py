@@ -1,2 +1,3 @@
 click("TestButton.png")
-if exists("GreenLabel.png"): print "Success"
+wait("GreenLabel.png")
+if exists("GreenLabel.png"): print "SikuliSharp.Tests.Success"

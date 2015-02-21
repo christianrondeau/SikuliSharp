@@ -14,7 +14,7 @@ namespace SikuliSharp.Tests
 			{
 				Assert.That(
 					Sikuli.RunProject(ResourcesUtil.DataFolder),
-					Is.StringMatching(@"\[log\] CLICK on L\(\d+,\d+\)@S\(0\)\[d\+,\d+ \d+x\d+\]\r\nSuccess\r\n")
+					Is.StringContaining("SikuliSharp.Tests.Success")
 					);
 			}
 		}
@@ -43,6 +43,10 @@ namespace SikuliSharp.Tests
 					Assert.That(session.Wait(greenLabelPattern, 10), Is.True, "Wait for green label long enough should work");
 
 					Assert.That(session.Exists(greenLabelPattern), Is.True, "Green label should now exist");
+
+					Assert.That(session.Type("x"), Is.True, "Type 'x' to exit");
+
+					Assert.That(session.WaitVanish(greenLabelPattern, 10), Is.True, "Wait for green label to vanish after app has exited");
 				}
 			}
 		}

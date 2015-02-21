@@ -78,6 +78,8 @@ All commands run against a `SikuliSession` instance. Also, all commands take a s
 * `session.Exists(pattern)` checks if the pattern exists on the screen
 * `session.Click(pattern)` tries to click on the pattern if it exists on the screen
 * `session.Wait(pattern)` tries to click on the pattern if it exists on the screen
+* `session.WaitVanish(pattern)` waits for the pattern to disappear from the screen
+* `session.Type(text)` sends the characters to the application; don't forget to escape special characters!
 
 ## Future
 
