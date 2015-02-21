@@ -17,10 +17,10 @@ namespace SikuliSharp
 			var javaPath = GuessJavaPath();
 
 			var sikuliHome = MakeEmptyNull(Environment.GetEnvironmentVariable("SIKULI_HOME"));
-			if (sikuliHome == null) throw new Exception("Environment variables SIKULI_HOME not set");
+			if (sikuliHome == null) throw new Exception("Environment variable SIKULI_HOME not set. Please verify that Sikuli is installed (sikuli-script.jar must be present) and create a SIKULI_HOME environment variable. You may need to restart your command prompt or IDE.");
 			var sikuliScriptJarPath = Path.Combine(sikuliHome, "sikuli-script.jar");
 			if (!File.Exists(sikuliScriptJarPath))
-				throw new Exception(string.Format("Sikuli JAR references from SIKULI_HOME does not exist: {0}", sikuliScriptJarPath));
+				throw new FileNotFoundException(string.Format("sikuli-script.jar does not exist in the path referenced in SIKULI_HOME environment variable: {0}", sikuliScriptJarPath));
 
 			var process = new Process
 			{
