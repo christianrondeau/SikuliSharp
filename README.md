@@ -28,7 +28,7 @@ using(var session = new Sikuli.CreateSession())
 You can also simply run a project:
 
 ```c#
-new Sikuli.RunProject(@"C:\MyProject.sikuli"));
+new Sikuli.RunProject(@"C:\MyProject.sikuli");
 ```
 
 ## How Does it Work
@@ -73,10 +73,11 @@ var pattern = Patterns.FromFile(@"C:\Patterns\MyPattern.png", 0.6f);
 
 ### Commands
 
-All commands run against a `SikuliSession` instance.
+All commands run against a `SikuliSession` instance. Also, all commands take a second `timeoutSeconds` parameter, that if left empty, will wait "forever".
 
 * `session.Exists(pattern)` checks if the pattern exists on the screen
 * `session.Click(pattern)` tries to click on the pattern if it exists on the screen
+* `session.Wait(pattern)` tries to click on the pattern if it exists on the screen
 
 ## Future
 

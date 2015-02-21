@@ -6,13 +6,13 @@ namespace SikuliSharp
 	public interface ISikuliRuntime : IDisposable
 	{
 		void Start();
-		void Stop();
-		string Run(string command, string resultPrefix);
+		void Stop(bool ignoreErrors = false);
+		string Run(string command, string resultPrefix, double timeoutInSeconds);
 	}
 
 	public class SikuliRuntime : ISikuliRuntime
 	{
-		private readonly IAsyncTwoWayStreamsHandlerFactory _asyncTwoWayStreamsHandlerFactory;
+		private readonly IAsyncDuplexStreamsHandlerFactory _asyncDuplexStreamsHandlerFactory;
 		private bool _isRunning;
 		private Process _process;
 		private IAsyncTwoWayStreamsHandler _asyncTwoWayStreamsHandler;
@@ -21,12 +21,13 @@ namespace SikuliSharp
 		private const string InteractiveConsoleReadyMarker = "... use ctrl-d to end the session";
 		private const string ErrorMarker = "[error]";
 		private const string ExitCommand = "exit()";
+		private const int SikuliReadyTimeoutSeconds = 30;
 
-		public SikuliRuntime(IAsyncTwoWayStreamsHandlerFactory asyncTwoWayStreamsHandlerFactory, ISikuliScriptProcessFactory sikuliScriptProcessFactory)
+		public SikuliRuntime(IAsyncDuplexStreamsHandlerFactory asyncDuplexStreamsHandlerFactory, ISikuliScriptProcessFactory sikuliScriptProcessFactory)
 		{
-			if (asyncTwoWayStreamsHandlerFactory == null) throw new ArgumentNullException("asyncTwoWayStreamsHandlerFactory");
+			if (asyncDuplexStreamsHandlerFactory == null) throw new ArgumentNullException("asyncDuplexStreamsHandlerFactory");
 			if (sikuliScriptProcessFactory == null) throw new ArgumentNullException("sikuliScriptProcessFactory");
-			_asyncTwoWayStreamsHandlerFactory = asyncTwoWayStreamsHandlerFactory;
+			_asyncDuplexStreamsHandlerFactory = asyncDuplexStreamsHandlerFactory;
 			_sikuliScriptProcessFactory = sikuliScriptProcessFactory;
 		}
 
@@ -36,12 +37,12 @@ namespace SikuliSharp
 
 			_process = _sikuliScriptProcessFactory.Start("-i");
 
-			_asyncTwoWayStreamsHandler = _asyncTwoWayStreamsHandlerFactory.Create(_process.StandardOutput, _process.StandardInput);
+			_asyncTwoWayStreamsHandler = _asyncDuplexStreamsHandlerFactory.Create(_process.StandardOutput, _process.StandardInput);
 
-			_asyncTwoWayStreamsHandler.ReadUntil(InteractiveConsoleReadyMarker);
+			_asyncTwoWayStreamsHandler.ReadUntil(SikuliReadyTimeoutSeconds, InteractiveConsoleReadyMarker);
 		}
 
-		public void Stop()
+		public void Stop(bool ignoreErrors = false)
 		{
 			if (!_isRunning) return;
 
@@ -49,6 +50,14 @@ namespace SikuliSharp
 			
 			if(!_process.WaitForExit(500))
 				_process.Kill();
+
+			if (!ignoreErrors)
+			{
+				var errors = _process.StandardError.ReadToEnd();
+				if (!String.IsNullOrEmpty(errors))
+					throw new Exception("Sikuli Errors: " + errors);
+			}
+
 			_asyncTwoWayStreamsHandler.WaitForExit();
 
 			_asyncTwoWayStreamsHandler.Dispose();
@@ -59,7 +68,7 @@ namespace SikuliSharp
 			_isRunning = false;
 		}
 
-		public string Run(string command, string resultPrefix)
+		public string Run(string command, string resultPrefix, double timeoutInSeconds)
 		{
 			#if(DEBUG)
 			Debug.WriteLine(command);
@@ -68,7 +77,7 @@ namespace SikuliSharp
 			_asyncTwoWayStreamsHandler.WriteLine("");
 			_asyncTwoWayStreamsHandler.WriteLine("");
 
-			var result = _asyncTwoWayStreamsHandler.ReadUntil(ErrorMarker, resultPrefix);
+			var result = _asyncTwoWayStreamsHandler.ReadUntil(timeoutInSeconds, ErrorMarker, resultPrefix);
 
 			if(result.IndexOf(ErrorMarker, StringComparison.Ordinal) > -1)
 				throw new Exception("Sikuli Error: " + result);
@@ -81,7 +90,8 @@ namespace SikuliSharp
 			if (_process != null)
 			{
 				if (!_process.HasExited)
-					Stop();
+					Stop(true);
+
 				_process.Dispose();
 				_process = null;
 			}

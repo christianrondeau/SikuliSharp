@@ -9,10 +9,10 @@ namespace SikuliSharp.Tests.Unit
 		[Test]
 		public void CanCreateAnInstance()
 		{
-			var sr = new StreamReader(new MemoryStream());
-			var sw = new StreamWriter(new MemoryStream());
+			var sr = new StringReader("");
+			var sw = new StringWriter();
 
-			Assert.That(new AsyncTwoWayStreamsHandlerFactory().Create(sr, sw), Is.TypeOf<AsyncTwoWayStreamsHandler>());
+			Assert.That(new AsyncDuplexStreamsHandlerFactory().Create(sr, sw), Is.TypeOf<AsyncTwoWayStreamsHandler>());
 		}
 	}
 }

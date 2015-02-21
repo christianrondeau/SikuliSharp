@@ -4,8 +4,9 @@ namespace SikuliSharp
 {
 	public interface ISikuliSession : IDisposable
 	{
-		bool Exists(IPattern pattern);
-		bool Click(IPattern pattern);
+		bool Exists(IPattern pattern, float timeoutInSeconds = 0);
+		bool Click(IPattern pattern, float timeoutInSeconds = 0);
+		bool Wait(IPattern pattern, float timeoutInSeconds = 0);
 	}
 
 	public class SikuliSession : ISikuliSession
@@ -18,22 +19,33 @@ namespace SikuliSharp
 			_runtime.Start();
 		}
 
-		public bool Exists(IPattern pattern)
+		public bool Exists(IPattern pattern, float timeoutInSeconds = 0f)
 		{
-			return RunCommand("exists", pattern);
+			return RunCommand("exists", pattern, timeoutInSeconds);
 		}
 
-		public bool Click(IPattern pattern)
+		public bool Click(IPattern pattern, float timeoutInSeconds = 0f)
 		{
-			return RunCommand("click", pattern);
+			return RunCommand("click", pattern, timeoutInSeconds);
 		}
 
-		private bool RunCommand(string command, IPattern pattern)
+		public bool Wait(IPattern pattern, float timeoutInSeconds = 0f)
+		{
+			return RunCommand("wait", pattern, timeoutInSeconds);
+		}
+
+		private bool RunCommand(string command, IPattern pattern, float timeoutInSeconds)
 		{
 			pattern.Validate();
 
-			var script = string.Format("print \"SIKULI#: YES\" if {0}({1}) else \"SIKULI#: NO\"", command, pattern.ToSikuliScript());
-			var result = _runtime.Run(script, "SIKULI#: ");
+			var script = string.Format(
+				"print \"SIKULI#: YES\" if {0}({1}{2}) else \"SIKULI#: NO\"",
+				command,
+				pattern.ToSikuliScript(),
+				timeoutInSeconds > 0f ? ", " + timeoutInSeconds.ToString("0.0000") : ""
+				);
+
+			var result = _runtime.Run(script, "SIKULI#: ", timeoutInSeconds);
 			return result.Contains("SIKULI#: YES");
 		}
 

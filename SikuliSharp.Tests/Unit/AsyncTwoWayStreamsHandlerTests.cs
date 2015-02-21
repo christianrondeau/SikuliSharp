@@ -40,7 +40,20 @@ namespace SikuliSharp.Tests.Unit
 
 			var handler = new AsyncTwoWayStreamsHandler(sr, sw);
 
-			Assert.That(handler.ReadUntil("MARKER"), Is.EqualTo("This line should be taken because it includes MARKER in it"));
+			Assert.That(handler.ReadUntil(0, "MARKER"), Is.EqualTo("This line should be taken because it includes MARKER in it"));
+		}
+
+		[Test]
+		[ExpectedException(typeof(TimeoutException), ExpectedMessage = "No result in alloted time: 00.1000s")]
+		public void ReadUntilTimeoutThrows()
+		{
+			var stream = new BlockingStream();
+			var sr = new StreamReader(stream);
+			var sw = new StringWriter();
+
+			var handler = new AsyncTwoWayStreamsHandler(sr, sw);
+
+			Assert.That(handler.ReadUntil(0.1, "MARKER"), Is.EqualTo("This line should be taken because it includes MARKER in it"));
 		}
 
 		[Test]

@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace SikuliSharp
 {
-	public interface IAsyncTwoWayStreamsHandlerFactory
+	public interface IAsyncDuplexStreamsHandlerFactory
 	{
-		IAsyncTwoWayStreamsHandler Create(StreamReader output, StreamWriter input);
+		IAsyncTwoWayStreamsHandler Create(TextReader output, TextWriter input);
 	}
 
-	public class AsyncTwoWayStreamsHandlerFactory : IAsyncTwoWayStreamsHandlerFactory
+	public class AsyncDuplexStreamsHandlerFactory : IAsyncDuplexStreamsHandlerFactory
 	{
-		public IAsyncTwoWayStreamsHandler Create(StreamReader output, StreamWriter input)
+		public IAsyncTwoWayStreamsHandler Create(TextReader output, TextWriter input)
 		{
 			return new AsyncTwoWayStreamsHandler(output, input);
 		}
@@ -22,7 +22,7 @@ namespace SikuliSharp
 
 	public interface IAsyncTwoWayStreamsHandler : IDisposable
 	{
-		string ReadUntil(params string[] expectedStrings);
+		string ReadUntil(double timeoutInSeconds, params string[] expectedStrings);
 		void WriteLine(string command);
 		void WaitForExit();
 	}
@@ -39,15 +39,26 @@ namespace SikuliSharp
 			_input = input;
 			_output = output;
 
-			_task = new Task(AsyncOutputStreamReader);
+			_task = new Task(ReadLinesAsync);
 			_task.Start();
 		}
 
-		public string ReadUntil(params string[] expectedStrings)
+		public string ReadUntil(double timeoutInSeconds, params string[] expectedStrings)
 		{
 			while (true)
 			{
-				var line = _pendingOutputLines.Take();
+				string line;
+				if (timeoutInSeconds > 0)
+				{
+					var timeout = TimeSpan.FromSeconds(timeoutInSeconds);
+					if (!_pendingOutputLines.TryTake(out line, timeout))
+						throw new TimeoutException(string.Format(@"No result in alloted time: {0:ss\.ffff}s", timeout));
+				}
+				else
+				{
+					line = _pendingOutputLines.Take();
+				}
+
 				if (expectedStrings.Any(s => line.IndexOf(s, StringComparison.Ordinal) > -1))
 				{
 					return line;
@@ -68,11 +79,9 @@ namespace SikuliSharp
 		public void Dispose()
 		{
 			if (_task != null) _task.Dispose();
-			if (_input != null) _input.Dispose();
-			if (_output != null) _output.Dispose();
 		}
 
-		private void AsyncOutputStreamReader()
+		private void ReadLinesAsync()
 		{
 			string line;
 			while ((line = _output.ReadLine()) != null)

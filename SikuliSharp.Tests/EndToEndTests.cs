@@ -30,17 +30,19 @@ namespace SikuliSharp.Tests
 					var greenLabelPattern = Patterns.FromFile(ResourcesUtil.GreenLabelPatternPath, 0.9f);
 					var testButtonPattern = Patterns.FromFile(ResourcesUtil.TestButtonPatternPath, 0.9f);
 
-					Console.WriteLine("Assert Red Label Exists");
-					Assert.That(session.Exists(redLabelPattern), Is.True);
+					Assert.That(session.Exists(redLabelPattern), Is.True, "Red label should exist");
 
-					Console.WriteLine("Assert Green Label does not Exist");
-					Assert.That(session.Exists(greenLabelPattern), Is.False);
+					Assert.That(session.Exists(greenLabelPattern), Is.False, "Green label should not exist yet");
 
-					Console.WriteLine("Assert Click on Test Button");
-					Assert.That(session.Click(testButtonPattern), Is.True);
+					Assert.That(session.Click(testButtonPattern), Is.True, "Click on test button");
 
-					Console.WriteLine("Assert Green Label Exists");
-					Assert.That(session.Exists(greenLabelPattern), Is.True);
+					Assert.That(session.Exists(greenLabelPattern), Is.False, "Green label should still not exist (a 5s timer is shown)");
+
+					Assert.Throws<TimeoutException>(() => session.Wait(greenLabelPattern, 1), "Wait for green label, but not long enough should now work");
+
+					Assert.That(session.Wait(greenLabelPattern, 10), Is.True, "Wait for green label long enough should work");
+
+					Assert.That(session.Exists(greenLabelPattern), Is.True, "Green label should now exist");
 				}
 			}
 		}

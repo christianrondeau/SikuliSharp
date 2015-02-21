@@ -9,7 +9,7 @@ namespace SikuliSharp
 		{
 			return new SikuliSession(
 				new SikuliRuntime(
-					new AsyncTwoWayStreamsHandlerFactory(),
+					new AsyncDuplexStreamsHandlerFactory(),
 					new SikuliScriptProcessFactoryFactory()
 					)
 				);
