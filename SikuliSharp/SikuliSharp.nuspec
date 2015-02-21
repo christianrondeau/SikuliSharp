@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>SikuliSharp</id>
+    <version>1.0.0</version>
+    <title>SikuliSharp</title>
+    <authors>Christian Rondeau</authors>
+    <owners>Christian Rondeau</owners>
+    <licenseUrl>https://github.com/christianrondeau/SikuliSharp/blob/master/LICENSE.md</licenseUrl>
+    <projectUrl>https://github.com/christianrondeau/SikuliSharp</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/christianrondeau/SikuliSharp/master/Assets/Nuget.Icon.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A fast and simple Sikuli wrapper for .Net</description>
+    <summary>Uses the Sikuli interactive console for faster results; you can run commands, or run a .sikuli project. Requires to have Java and Sikuli installed.</summary>
+    <releaseNotes>Support for interactive commands: Exists, Click, Type, Wait and WaitVanish. Support for running .sikuli projects.</releaseNotes>
+    <copyright>Copyright Christian Rondeau 2015</copyright>
+    <tags>sikuli automation unit test functional automated</tags>
+  </metadata>
+</package>
