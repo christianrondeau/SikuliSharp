@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
-using System.IO;
 using NUnit.Framework;
 using SikuliSharp.Tests.Utils;
 
@@ -9,52 +7,42 @@ namespace SikuliSharp.Tests
 	[TestFixture]
 	public class EndToEndTests
 	{
-		[SetUp]
-		public void BeforeEach()
+		[Test]
+		public void CanRunSikuliProject()
 		{
-		}
-
-		[TearDown]
-		public void AfterEach()
-		{
+			using (ResourcesUtil.StartTestApplication())
+			{
+				Assert.That(
+					Sikuli.RunProject(ResourcesUtil.DataFolder),
+					Is.StringMatching(@"\[log\] CLICK on L\(\d+,\d+\)@S\(0\)\[d\+,\d+ \d+x\d+\]\r\nSuccess\r\n")
+					);
+			}
 		}
 
 		[Test]
-		public void CanClickOnAButtonAndDetectStateChange()
+		public void CanRunSikuliCommands()
 		{
-
-			using (ISikuliSession sikuli = new SikuliSession())
+			using (var session = Sikuli.CreateSession())
 			{
-				using (var process = StartTestApplication(ResourcesUtil.BinPath))
+				using (ResourcesUtil.StartTestApplication())
 				{
 					var redLabelPattern = Patterns.FromFile(ResourcesUtil.RedLabelPatternPath, 0.9f);
 					var greenLabelPattern = Patterns.FromFile(ResourcesUtil.GreenLabelPatternPath, 0.9f);
 					var testButtonPattern = Patterns.FromFile(ResourcesUtil.TestButtonPatternPath, 0.9f);
 
 					Console.WriteLine("Assert Red Label Exists");
-					Assert.That(sikuli.Exists(redLabelPattern), Is.True);
+					Assert.That(session.Exists(redLabelPattern), Is.True);
 
 					Console.WriteLine("Assert Green Label does not Exist");
-					Assert.That(sikuli.Exists(greenLabelPattern), Is.False);
+					Assert.That(session.Exists(greenLabelPattern), Is.False);
 
 					Console.WriteLine("Assert Click on Test Button");
-					Assert.That(sikuli.Click(testButtonPattern), Is.True);
+					Assert.That(session.Click(testButtonPattern), Is.True);
 
 					Console.WriteLine("Assert Green Label Exists");
-					Assert.That(sikuli.Exists(greenLabelPattern), Is.True);
-
-					process.CloseMainWindow();
-					process.WaitForExit();
+					Assert.That(session.Exists(greenLabelPattern), Is.True);
 				}
 			}
-		}
-
-		private Process StartTestApplication(string binPath)
-		{
-			var testAppPath = Path.Combine(binPath, "SikuliSharp.TestApplication.exe");
-			var process = Process.Start(new ProcessStartInfo(testAppPath));
-			if (process == null) Assert.Fail("Cannot start process: process null");
-			return process;
 		}
 	}
 }

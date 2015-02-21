@@ -1,6 +1,5 @@
 using System;
 using System.Diagnostics;
-using System.IO;
 
 namespace SikuliSharp
 {
@@ -17,54 +16,36 @@ namespace SikuliSharp
 		private bool _isRunning;
 		private Process _process;
 		private IAsyncTwoWayStreamsHandler _asyncTwoWayStreamsHandler;
+		private readonly ISikuliScriptProcessFactory _sikuliScriptProcessFactory;
 
-		public SikuliRuntime(IAsyncTwoWayStreamsHandlerFactory asyncTwoWayStreamsHandlerFactory)
+		private const string InteractiveConsoleReadyMarker = "... use ctrl-d to end the session";
+		private const string ErrorMarker = "[error]";
+		private const string ExitCommand = "exit()";
+
+		public SikuliRuntime(IAsyncTwoWayStreamsHandlerFactory asyncTwoWayStreamsHandlerFactory, ISikuliScriptProcessFactory sikuliScriptProcessFactory)
 		{
 			if (asyncTwoWayStreamsHandlerFactory == null) throw new ArgumentNullException("asyncTwoWayStreamsHandlerFactory");
+			if (sikuliScriptProcessFactory == null) throw new ArgumentNullException("sikuliScriptProcessFactory");
 			_asyncTwoWayStreamsHandlerFactory = asyncTwoWayStreamsHandlerFactory;
+			_sikuliScriptProcessFactory = sikuliScriptProcessFactory;
 		}
 
 		public void Start()
 		{
 			if (_isRunning) return;
 
-			var javaHome = GetPathEnvironmentVariable("JAVA_HOME");
-			var javaPath = Path.Combine(javaHome, "bin", "java.exe");
-			if (!File.Exists(javaPath))
-				throw new Exception(string.Format("Java executable referenced from JAVA_HOME does not exist: {0}", javaPath));
-
-			var sikuliHome = GetPathEnvironmentVariable("SIKULI_HOME");
-			var sikuliScriptJarPath = Path.Combine(sikuliHome, "sikuli-script.jar");
-			if (!File.Exists(sikuliScriptJarPath))
-				throw new Exception(string.Format("Sikuli JAR references from SIKULI_HOME does not exist: {0}", sikuliScriptJarPath));
-
-			_process = new Process
-			{
-				StartInfo =
-				{
-					FileName = javaPath,
-					Arguments = string.Format("-jar \"{0}\" -i", sikuliScriptJarPath),
-					CreateNoWindow = true,
-					WindowStyle = ProcessWindowStyle.Hidden,
-					UseShellExecute = false,
-					RedirectStandardInput = true,
-					RedirectStandardError = true,
-					RedirectStandardOutput = true
-				}
-			};
-
-			_process.Start();
+			_process = _sikuliScriptProcessFactory.Start("-i");
 
 			_asyncTwoWayStreamsHandler = _asyncTwoWayStreamsHandlerFactory.Create(_process.StandardOutput, _process.StandardInput);
 
-			_asyncTwoWayStreamsHandler.ReadUntil("... use ctrl-d to end the session");
+			_asyncTwoWayStreamsHandler.ReadUntil(InteractiveConsoleReadyMarker);
 		}
 
 		public void Stop()
 		{
 			if (!_isRunning) return;
 
-			_asyncTwoWayStreamsHandler.WriteLine("exit()");
+			_asyncTwoWayStreamsHandler.WriteLine(ExitCommand);
 			
 			if(!_process.WaitForExit(500))
 				_process.Kill();
@@ -87,14 +68,12 @@ namespace SikuliSharp
 			_asyncTwoWayStreamsHandler.WriteLine("");
 			_asyncTwoWayStreamsHandler.WriteLine("");
 
-			return _asyncTwoWayStreamsHandler.ReadUntil(resultPrefix);
-		}
+			var result = _asyncTwoWayStreamsHandler.ReadUntil(ErrorMarker, resultPrefix);
 
-		private static string GetPathEnvironmentVariable(string name)
-		{
-			var value = Environment.GetEnvironmentVariable(name);
-			if (String.IsNullOrEmpty(value)) throw new Exception(string.Format("Environment variables {0} not set", name));
-			return value;
+			if(result.IndexOf(ErrorMarker, StringComparison.Ordinal) > -1)
+				throw new Exception("Sikuli Error: " + result);
+
+			return result;
 		}
 
 		public void Dispose()

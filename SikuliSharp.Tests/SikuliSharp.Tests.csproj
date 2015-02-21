@@ -71,15 +71,16 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Patterns\GreenLabel.png">
+    <Content Include="Data.sikuli\Data.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Patterns\RedLabel.png">
+    <Content Include="Data.sikuli\GreenLabel.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Patterns\TestButton.png">
+    <Content Include="Data.sikuli\RedLabel.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data.sikuli\TestButton.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

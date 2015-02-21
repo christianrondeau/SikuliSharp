@@ -12,11 +12,6 @@ namespace SikuliSharp
 	{
 		private readonly ISikuliRuntime _runtime;
 
-		public SikuliSession() : this(new SikuliRuntime(new AsyncTwoWayStreamsHandlerFactory()))
-		{
-			
-		}
-
 		public SikuliSession(ISikuliRuntime sikuliRuntime)
 		{
 			_runtime = sikuliRuntime;

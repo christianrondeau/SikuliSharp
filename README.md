@@ -18,11 +18,17 @@ Check these steps first:
 Here is a simple example using [NUnit](http://www.nunit.org/):
 
 ```c#
-using(var session = new SikuliSession())
+using(var session = new Sikuli.CreateSession())
 {
   var pattern = Patterns.FromFile(@"C:\Patterns\MyPattern.png"); 
   Assert.That(session.Exists(pattern), Is.True);
 }
+```
+
+You can also simply run a project:
+
+```c#
+new Sikuli.RunProject(@"C:\MyProject.sikuli"));
 ```
 
 ## How Does it Work
@@ -33,12 +39,19 @@ A `SikuliSession` launches an instance of the Sikuli interactive script engine u
 
 Remember that this library simply wraps Sikuli; the same limitations apply. You can't use your computer while tests are running since Sikuli takes control of the mouse, and patterns may require fine tuning (using `similarity`).
 
+### Sikuli
+
+The `Sikuli` object is the main entry point for all operations. It contains two methods:
+
+* `CreateSession`, which returns an `ISikuliSession`, with which you can execute Sikuli commands
+* `RunProject` which simply runs a `.sikuli` project and returns the console output
+
 ### SikuliSession
 
-All actions must happen within a `SikuliSession`.
+All actions must happen within a `ISikuliSession`.
 
 ```c#
-using (var session = new SikuliSession())
+using (var session = Sikuli.CreateSession())
 {
   // Do stuff here
 }

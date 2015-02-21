@@ -42,6 +42,8 @@
     <Compile Include="AsyncTwoWayStreamsHandler.cs" />
     <Compile Include="Patterns.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sikuli.cs" />
+    <Compile Include="SikuliScriptProcessFactory.cs" />
     <Compile Include="SikuliRuntime.cs" />
     <Compile Include="SikuliSession.cs" />
   </ItemGroup>
