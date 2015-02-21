@@ -27,6 +27,7 @@ namespace SikuliSharp.Tests.Utils
 
 		public override int Read(byte[] buffer, int offset, int count)
 		{
+			// ReSharper disable once EmptyEmbeddedStatement
 			while (_block) ;
 			return 0;
 		}

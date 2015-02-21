@@ -56,6 +56,14 @@ using (var session = Sikuli.CreateSession())
 }
 ```
 
+All commands run against a `SikuliSession` instance. Also, all commands take a second `timeoutSeconds` parameter, that if left empty, will wait "forever".
+
+* `session.Exists(pattern)` checks if the pattern exists on the screen
+* `session.Click(pattern)` tries to click on the pattern if it exists on the screen
+* `session.Wait(pattern)` tries to click on the pattern if it exists on the screen
+* `session.WaitVanish(pattern)` waits for the pattern to disappear from the screen
+* `session.Type(text)` sends the characters to the application; don't forget to escape special characters!
+
 ### Patterns
 
 Creating a pattern from a file path
@@ -70,25 +78,35 @@ You can also specify a similarity (between `0f` an `1f`)
 var pattern = Patterns.FromFile(@"C:\Patterns\MyPattern.png", 0.6f); 
 ```
 
-### Commands
+### Extensibility
 
-All commands run against a `SikuliSession` instance. Also, all commands take a second `timeoutSeconds` parameter, that if left empty, will wait "forever".
+If you need more functions, you can create your own. Here is an example:
 
-* `session.Exists(pattern)` checks if the pattern exists on the screen
-* `session.Click(pattern)` tries to click on the pattern if it exists on the screen
-* `session.Wait(pattern)` tries to click on the pattern if it exists on the screen
-* `session.WaitVanish(pattern)` waits for the pattern to disappear from the screen
-* `session.Type(text)` sends the characters to the application; don't forget to escape special characters!
+```c#
+using(var runtime = Sikuli.CreateRuntime())
+{
+  runtime.Start();
+
+  var result = runtime.Run(
+    "print \"RESULT: OK\" if exists(\"C:\\\\Patterns\\\\MyPattern.png\") else \"RESULT: FAIL\"",
+    "RESULT:",
+    0d
+    );
+
+  Assert.That(result, Is.StringContaining("RESULT:OK"));
+}
+```
+
+Note that if you don't provide a timeout and the `resultPrefix` parameter is not printed in the console, the runtime will hang.
 
 ## Future
 
 Here are some ideas of this to improve, if there is interest:
 
 * Get rid of the yellow banner ([should be solved in 1.1.0](https://bugs.launchpad.net/sikuli/+bug/1221062))
-* Implement other sikuli functions (`wait`, `offset`)
+* Implement other sikuli functions
 * It may be interesting to provide other `IPattern` implementation, e.g. embedded resources
 * If possible, install Sikuli at runtime. Not sure about this one though.
-* Allow providing a Sikuli project (`.sikuli`). That would be fairly easy, we just need to run the project using `-r` and gather the output. I'm thinking something along the lines of `SikuliSession.RunProject(@"C:\MyProject.sikuli")`, which returns the console output.
 
 ## Contributions
 

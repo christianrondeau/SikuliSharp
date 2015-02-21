@@ -87,7 +87,7 @@ namespace SikuliSharp
 			while ((line = _output.ReadLine()) != null)
 			{
 				#if(DEBUG)
-				Debug.WriteLine("SIKULI> " + line ?? "");
+				Debug.WriteLine("SIKULI> " + line);
 				#endif
 				_pendingOutputLines.Add(line);
 			}

@@ -7,11 +7,14 @@ namespace SikuliSharp
 	{
 		public static ISikuliSession CreateSession()
 		{
-			return new SikuliSession(
-				new SikuliRuntime(
-					new AsyncDuplexStreamsHandlerFactory(),
-					new SikuliScriptProcessFactory()
-					)
+			return new SikuliSession(CreateRuntime());
+		}
+
+		public static SikuliRuntime CreateRuntime()
+		{
+			return new SikuliRuntime(
+				new AsyncDuplexStreamsHandlerFactory(),
+				new SikuliScriptProcessFactory()
 				);
 		}
 

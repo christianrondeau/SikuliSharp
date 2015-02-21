@@ -16,7 +16,4 @@
     <copyright>Copyright Christian Rondeau 2015</copyright>
     <tags>sikuli automation unit test functional automated</tags>
   </metadata>
-  <files>
-    <file src="readme.txt" target="" />
-  </files>
 </package>

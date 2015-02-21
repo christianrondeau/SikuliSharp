@@ -57,7 +57,7 @@ namespace SikuliSharp
 			return result.Contains("SIKULI#: YES");
 		}
 
-		private bool RunCommand(string command, IPattern pattern, float timeoutInSeconds)
+		protected bool RunCommand(string command, IPattern pattern, float timeoutInSeconds)
 		{
 			pattern.Validate();
 
