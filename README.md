@@ -28,7 +28,7 @@ using(var session = new Sikuli.CreateSession())
 You can also simply run a project:
 
 ```c#
-new Sikuli.RunProject(@"C:\MyProject.sikuli");
+Sikuli.RunProject(@"C:\Projects\MyProject.sikuli");
 ```
 
 ## How Does it Work
