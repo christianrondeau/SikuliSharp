@@ -7,6 +7,7 @@ namespace SikuliSharp
 	{
 		bool Exists(IPattern pattern, float timeoutInSeconds = 0);
 		bool Click(IPattern pattern, float timeoutInSeconds = 0);
+		bool Click(IPattern pattern, Point offset, float timeoutInSeconds = 0f);
 		bool Wait(IPattern pattern, float timeoutInSeconds = 0);
 		bool WaitVanish(IPattern pattern, float timeoutInSeconds = 0);
 		bool Type(string text);
@@ -16,7 +17,7 @@ namespace SikuliSharp
 	{
 		private static readonly Regex InvalidTextRegex = new Regex(@"[\r\n\t\x00-\x1F]", RegexOptions.Compiled);
 		private readonly ISikuliRuntime _runtime;
-
+		
 		public SikuliSession(ISikuliRuntime sikuliRuntime)
 		{
 			_runtime = sikuliRuntime;
@@ -31,6 +32,11 @@ namespace SikuliSharp
 		public bool Click(IPattern pattern, float timeoutInSeconds = 0f)
 		{
 			return RunCommand("click", pattern, timeoutInSeconds);
+		}
+
+		public bool Click(IPattern pattern, Point offset, float timeoutInSeconds = 0f)
+		{
+			return RunCommand("click", new WithOffsetPattern(pattern, offset), timeoutInSeconds);
 		}
 
 		public bool Wait(IPattern pattern, float timeoutInSeconds = 0f)
@@ -65,11 +71,16 @@ namespace SikuliSharp
 				"print \"SIKULI#: YES\" if {0}({1}{2}) else \"SIKULI#: NO\"",
 				command,
 				pattern.ToSikuliScript(),
-				timeoutInSeconds > 0f ? ", " + timeoutInSeconds.ToString("0.0000") : ""
+				AddTimeout(timeoutInSeconds)
 				);
 
 			var result = _runtime.Run(script, "SIKULI#: ", timeoutInSeconds);
 			return result.Contains("SIKULI#: YES");
+		}
+
+		private static string AddTimeout(float timeoutInSeconds)
+		{
+			return timeoutInSeconds > 0f ? ", " + timeoutInSeconds.ToString("0.####") : "";
 		}
 
 		public void Dispose()

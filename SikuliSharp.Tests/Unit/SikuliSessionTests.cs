@@ -44,8 +44,15 @@ namespace SikuliSharp.Tests.Unit
 
 				yield return new CommandTestData
 				{
+					Timeout = 5,
+					ExpectedCommand = "print \"SIKULI#: YES\" if click(::PATTERN::.targetOffset(0, -100), 5) else \"SIKULI#: NO\"",
+					Method = (session, pattern) => session.Click(pattern, new Point(0, -100), 5)
+				};
+
+				yield return new CommandTestData
+				{
 					Timeout = 9999f,
-					ExpectedCommand = "print \"SIKULI#: YES\" if wait(::PATTERN::, 9999.0000) else \"SIKULI#: NO\"",
+					ExpectedCommand = "print \"SIKULI#: YES\" if wait(::PATTERN::, 9999) else \"SIKULI#: NO\"",
 					Method = (session, pattern) => session.Wait(pattern, 9999f)
 				};
 

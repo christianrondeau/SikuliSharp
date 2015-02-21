@@ -8,7 +8,11 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Button Grid.Row="0" Width="200" Height="30" Name="TestButton" Click="TestButton_OnClick">Test Button</Button>
-        <Label Grid.Row="1" Width="200" Height="30" Name="StateLabel" Background="Red" Foreground="White" BorderBrush="Black" BorderThickness="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">Not Clicked</Label>
+        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button ToolTip="Causes the red button to wait 5 seconds and turn green" Width="200" Height="30" Name="TestButton" Click="TestButton_OnClick">Test Button</Button>
+            <Button ToolTip="Causes the black box on the right to turn white" Margin="10,0,0,0" Width="30" Height="30" Name="OffsetButton" Click="OffsetButton_OnClickButton_OnClick">&gt;</Button>
+            <Label ToolTip="Turns white when the left button is clicked" Margin="10,0,0,0" Width="30" Height="30" Name="OffsetLabel" Background="Black" Foreground="White" BorderBrush="Black" BorderThickness="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">...</Label>
+        </StackPanel>
+        <Label ToolTip="Type 'X' to wait 5 seconds and exit, click on 'Test Button' to wait 5 seconds and turn green" Grid.Row="1" Width="200" Height="30" Name="StateLabel" Background="Red" Foreground="White" BorderBrush="Black" BorderThickness="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">Not Clicked</Label>
     </Grid>
 </Window>

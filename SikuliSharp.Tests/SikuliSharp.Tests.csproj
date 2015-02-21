@@ -46,6 +46,7 @@
     <Compile Include="EndToEndTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Unit\SikuliScriptProcessFactoryTests.cs" />
+    <Compile Include="Unit\WithOffsetPatternTests.cs" />
     <Compile Include="Utils\ResourcesUtil.cs" />
     <Compile Include="Unit\AsyncTwoWayStreamsHandlerFactoryTests.cs" />
     <Compile Include="Unit\AsyncTwoWayStreamsHandlerTests.cs" />
@@ -68,16 +69,25 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Data.sikuli\BlackOffsetLabel.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Data.sikuli\Data.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Data.sikuli\GreenLabel.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Data.sikuli\OffsetButton.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Data.sikuli\RedLabel.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Data.sikuli\TestButton.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data.sikuli\WhiteOffsetLabel.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

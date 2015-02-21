@@ -12,6 +12,9 @@ namespace SikuliSharp.Tests.Utils
 		public static string TestButtonPatternPath { get; private set; }
 		public static string GreenLabelPatternPath { get; private set; }
 		public static string RedLabelPatternPath { get; private set; }
+		public static string BlackOffsetLabelPatternPath { get; set; }
+		public static string WhiteOffsetLabelPatternPath { get; set; }
+		public static string OffsetButtonPatternPath { get; set; }
 
 		static ResourcesUtil()
 		{
@@ -24,6 +27,9 @@ namespace SikuliSharp.Tests.Utils
 			RedLabelPatternPath = Path.Combine(DataFolder, "RedLabel.png");
 			GreenLabelPatternPath = Path.Combine(DataFolder, "GreenLabel.png");
 			TestButtonPatternPath = Path.Combine(DataFolder, "TestButton.png");
+			BlackOffsetLabelPatternPath = Path.Combine(DataFolder, "BlackOffsetLabel.png");
+			WhiteOffsetLabelPatternPath = Path.Combine(DataFolder, "WhiteOffsetLabel.png");
+			OffsetButtonPatternPath = Path.Combine(DataFolder, "OffsetButton.png");
 		}
 
 		public static TestApplication StartTestApplication()

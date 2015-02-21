@@ -29,8 +29,18 @@ namespace SikuliSharp.Tests
 					var redLabelPattern = Patterns.FromFile(ResourcesUtil.RedLabelPatternPath, 0.9f);
 					var greenLabelPattern = Patterns.FromFile(ResourcesUtil.GreenLabelPatternPath, 0.9f);
 					var testButtonPattern = Patterns.FromFile(ResourcesUtil.TestButtonPatternPath, 0.9f);
+					var blackOffsetLabelPattern = Patterns.FromFile(ResourcesUtil.BlackOffsetLabelPatternPath, 0.9f);
+					var whiteOffsetLabelPattern = Patterns.FromFile(ResourcesUtil.WhiteOffsetLabelPatternPath, 0.9f);
 
-					Assert.That(session.Exists(redLabelPattern), Is.True, "Red label should exist");
+					Assert.That(session.Wait(redLabelPattern), Is.True, "Wait for application startup");
+
+					Assert.That(session.Exists(blackOffsetLabelPattern), Is.True, "Black offset label should exist");
+
+					Assert.That(session.Click(testButtonPattern, new Point(125, 0)), Is.True, "Click on the offset button by offsetting from the test button");
+
+					Assert.That(session.Exists(whiteOffsetLabelPattern), Is.True, "White offset label should exist");
+
+					Assert.That(session.Wait(redLabelPattern), Is.True, "Red label should exist");
 
 					Assert.That(session.Exists(greenLabelPattern), Is.False, "Green label should not exist yet");
 

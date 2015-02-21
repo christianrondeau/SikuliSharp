@@ -60,6 +60,7 @@ All commands run against the `ISikuliSession` instance. They also can receive a 
 
 * `session.Exists(pattern, timeoutsSeconds = 0f)` checks if the pattern exists on the screen
 * `session.Click(pattern, timeoutsSeconds = 0f)` tries to click on the pattern if it exists on the screen
+* `session.Click(pattern, offset, timeoutsSeconds = 0f)` Click to the `Point offset` distance from the pattern
 * `session.Wait(pattern, timeoutsSeconds = 0f)` tries to click on the pattern if it exists on the screen
 * `session.WaitVanish(pattern, timeoutsSeconds = 0f)` waits for the pattern to disappear from the screen
 * `session.Type(text)` sends the characters to the application; don't forget to double-escape special characters (e.g. `"\\n"` should be `"\\\\n"` or `@"\\n"`)

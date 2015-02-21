@@ -76,5 +76,11 @@ namespace SikuliSharp.TestApplication
 				_timer.Start();
 			}
 		}
+
+		private void OffsetButton_OnClickButton_OnClick(object sender, RoutedEventArgs e)
+		{
+			OffsetLabel.Background = Brushes.White;
+			OffsetLabel.Foreground = Brushes.Black;
+		}
 	}
 }
