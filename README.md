@@ -11,8 +11,7 @@ There are already existing wrappers, [sikuli-integrator](https://code.google.com
 Check these steps first:
 
 1. [Download Java](http://java.com/en/download/)
-2. [Download Sikuli 1.0.1](https://launchpad.net/sikuli/sikulix/1.0.1), then [install it](http://www.sikulix.com/quickstart.html)
-   Select the option to run scripts from command line - the file `sikuli-scripts.jar` must be installed
+2. [Download Sikuli 1.0.1](https://launchpad.net/sikuli/sikulix/1.0.1), then [install it](http://www.sikulix.com/quickstart.html) - select the option to _run scripts from the command line_ - the file `sikuli-scripts.jar` must be installed
 3. Create an environment variable `SIKULI_HOME` that points to your Sikuli install folder
 
 Here is a simple example using [NUnit](http://www.nunit.org/):
@@ -48,22 +47,22 @@ The `Sikuli` object is the main entry point for all operations. It contains two 
 
 ### `SikuliSession`
 
-All actions must happen within a `ISikuliSession`.
+All commands must be run within a `ISikuliSession`.
 
 ```c#
 using (var session = Sikuli.CreateSession())
 {
-  // Do stuff here
+  // Execute commands here
 }
 ```
 
-All commands run against a `SikuliSession` instance. Also, all commands take a second `timeoutSeconds` parameter, that if left empty, will wait "forever".
+All commands run against the `ISikuliSession` instance. They also can receive a `timeoutSeconds` parameter. If left empty, commands will wait "forever".
 
-* `session.Exists(pattern)` checks if the pattern exists on the screen
-* `session.Click(pattern)` tries to click on the pattern if it exists on the screen
-* `session.Wait(pattern)` tries to click on the pattern if it exists on the screen
-* `session.WaitVanish(pattern)` waits for the pattern to disappear from the screen
-* `session.Type(text)` sends the characters to the application; don't forget to escape special characters!
+* `session.Exists(pattern, timeoutsSeconds = 0f)` checks if the pattern exists on the screen
+* `session.Click(pattern, timeoutsSeconds = 0f)` tries to click on the pattern if it exists on the screen
+* `session.Wait(pattern, timeoutsSeconds = 0f)` tries to click on the pattern if it exists on the screen
+* `session.WaitVanish(pattern, timeoutsSeconds = 0f)` waits for the pattern to disappear from the screen
+* `session.Type(text)` sends the characters to the application; don't forget to double-escape special characters (e.g. `"\\n"` should be `"\\\\n"` or `@"\\n"`)
 
 ### `Patterns`
 
@@ -89,17 +88,18 @@ using(var runtime = Sikuli.CreateRuntime())
   runtime.Start();
 
   var result = runtime.Run(
-    "print \"RESULT: OK\" if exists(\"C:\\\\Patterns\\\\MyPattern.png\") else \"RESULT: FAIL\"",
+    @"print ""RESULT: OK"" if exists(""C:\\Patterns\\MyPattern.png"") else ""RESULT: FAIL""",
     "RESULT:",
     0d
     );
 
-  Assert.That(result, Is.StringContaining("RESULT:OK"));
+  Assert.That(result, Is.StringContaining("RESULT: OK"));
 }
 ```
 
-Note that if you don't provide a timeout and the `resultPrefix` parameter is not printed in the console, the runtime will hang.
+You **must** print a string that will show up regardless of whether the test succeeded or not. If you don't provide a timeout and the `resultPrefix` parameter is not printed in the console, the runtime will hang.
 
+Also remember that this sends [Jython](http://www.jython.org/) to the console. Therefore, you must double-escape strings accordingly.
 
 ## Contributions
 
