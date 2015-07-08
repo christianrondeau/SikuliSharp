@@ -19,7 +19,7 @@ Check these steps first:
 Here is a simple example using [NUnit](http://www.nunit.org/):
 
 ```c#
-using(var session = new Sikuli.CreateSession())
+using(var session = Sikuli.CreateSession())
 {
   var pattern = Patterns.FromFile(@"C:\Patterns\MyPattern.png"); 
   Assert.That(session.Exists(pattern), Is.True);
