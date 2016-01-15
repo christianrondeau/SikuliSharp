@@ -13,7 +13,7 @@ There are already existing wrappers, [sikuli-integrator](https://code.google.com
 Check these steps first:
 
 1. [Download Java](http://java.com/en/download/)
-2. [Download Sikuli 1.0.1](https://launchpad.net/sikuli/sikulix/1.0.1), then [install it](http://www.sikulix.com/quickstart.html) - select the option to _run scripts from the command line_ - the file `sikuli-scripts.jar` must be installed
+2. [Download Sikuli 1.1.0](https://launchpad.net/sikuli/sikulix/1.1.0), then [install it](http://www.sikulix.com/quickstart.html) - select the option to _run scripts from the command line_ - the file `sikuli-scripts.jar` must be installed
 3. Create an environment variable `SIKULI_HOME` that points to your Sikuli install folder
 
 Here is a simple example using [NUnit](http://www.nunit.org/):

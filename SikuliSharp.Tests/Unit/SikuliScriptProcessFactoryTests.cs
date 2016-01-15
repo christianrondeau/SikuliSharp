@@ -27,7 +27,7 @@ namespace SikuliSharp.Tests.Unit
 			new SikuliScriptProcessFactory().Start("-h");
 		}
 
-		[Test, ExpectedException(typeof(FileNotFoundException), ExpectedMessage = @"sikuli-script.jar does not exist in the path referenced in SIKULI_HOME environment variable: C:\Temp\sikuli-script.jar")]
+		[Test, ExpectedException(typeof(FileNotFoundException), ExpectedMessage = @"Neither sikuli-script.jar nor sikulix.jar were found in the path referenced in SIKULI_HOME environment variable ""C:\Temp""")]
 		public void ThrowsIfSikuliHomeIsSetAndFileDoesNotExist()
 		{
 			Environment.SetEnvironmentVariable("SIKULI_HOME", @"C:\Temp", EnvironmentVariableTarget.Process);

@@ -18,9 +18,8 @@ namespace SikuliSharp
 
 			var sikuliHome = MakeEmptyNull(Environment.GetEnvironmentVariable("SIKULI_HOME"));
 			if (sikuliHome == null) throw new Exception("Environment variable SIKULI_HOME not set. Please verify that Sikuli is installed (sikuli-script.jar must be present) and create a SIKULI_HOME environment variable. You may need to restart your command prompt or IDE.");
-			var sikuliScriptJarPath = Path.Combine(sikuliHome, "sikuli-script.jar");
-			if (!File.Exists(sikuliScriptJarPath))
-				throw new FileNotFoundException(string.Format("sikuli-script.jar does not exist in the path referenced in SIKULI_HOME environment variable: {0}", sikuliScriptJarPath));
+			
+			var sikuliScriptJarPath = DetectSikuliPath(sikuliHome);
 
 			var process = new Process
 			{
@@ -40,6 +39,20 @@ namespace SikuliSharp
 			process.Start();
 
 			return process;
+		}
+
+		private static string DetectSikuliPath(string sikuliHome)
+		{
+			var sikuliScript101JarPath = Path.Combine(sikuliHome, "sikuli-script.jar");
+			if (File.Exists(sikuliScript101JarPath))
+				return sikuliScript101JarPath;
+			
+			var sikuliScript110JarPath = Path.Combine(sikuliHome, "sikulix.jar");
+			if (File.Exists(sikuliScript110JarPath))
+				return sikuliScript110JarPath;
+
+			throw new FileNotFoundException(
+				string.Format("Neither sikuli-script.jar nor sikulix.jar were found in the path referenced in SIKULI_HOME environment variable \"{0}\"", sikuliHome));
 		}
 
 		public static string GuessJavaPath()
