@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.IO;
 
 namespace SikuliSharp
@@ -41,7 +42,7 @@ namespace SikuliSharp
 
 		public string ToSikuliScript()
 		{
-			return string.Format("Pattern(\"{0}\").similar({1})", _path.Replace(@"\", @"\\"), _similarity);
+			return string.Format(NumberFormatInfo.InvariantInfo, "Pattern(\"{0}\").similar({1})", _path.Replace(@"\", @"\\"), _similarity);
 		}
 	}
 
