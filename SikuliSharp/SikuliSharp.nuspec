@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>SikuliSharp</id>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
     <title>SikuliSharp</title>
     <authors>Christian Rondeau</authors>
     <owners>Christian Rondeau</owners>
@@ -12,8 +12,8 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A fast and simple Sikuli wrapper for .Net</description>
     <summary>Uses the Sikuli interactive console for faster results; you can run commands, or run a .sikuli project. Requires to have Java and Sikuli installed.</summary>
-    <releaseNotes>Ability to provide custom arguments to Sikuli.RunProject</releaseNotes>
-    <copyright>Copyright Christian Rondeau 2015</copyright>
+    <releaseNotes>Correctly pass decimals on machines that uses comma as decimal separator</releaseNotes>
+    <copyright>Copyright Christian Rondeau 2016</copyright>
     <tags>sikuli automation unit test functional automated</tags>
   </metadata>
 </package>
