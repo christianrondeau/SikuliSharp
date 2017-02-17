@@ -8,6 +8,8 @@ namespace SikuliSharp
 		bool Exists(IPattern pattern, float timeoutInSeconds = 0);
 		bool Click(IPattern pattern, float timeoutInSeconds = 0);
 		bool Click(IPattern pattern, Point offset, float timeoutInSeconds = 0f);
+		bool DoubleClick(IPattern pattern, float timeoutInSeconds = 0);
+		bool DoubleClick(IPattern pattern, Point offset, float timeoutInSeconds = 0f);
 		bool Wait(IPattern pattern, float timeoutInSeconds = 0);
 		bool WaitVanish(IPattern pattern, float timeoutInSeconds = 0);
 		bool Type(string text);
@@ -37,6 +39,16 @@ namespace SikuliSharp
 		public bool Click(IPattern pattern, Point offset, float timeoutInSeconds = 0f)
 		{
 			return RunCommand("click", new WithOffsetPattern(pattern, offset), timeoutInSeconds);
+		}
+		
+		public bool DoubleClick(IPattern pattern, float timeoutInSeconds = 0f)
+		{
+			return RunCommand("doubleClick", pattern, timeoutInSeconds);
+		}
+
+		public bool DoubleClick(IPattern pattern, Point offset, float timeoutInSeconds = 0f)
+		{
+			return RunCommand("doubleClick", new WithOffsetPattern(pattern, offset), timeoutInSeconds);
 		}
 
 		public bool Wait(IPattern pattern, float timeoutInSeconds = 0f)
