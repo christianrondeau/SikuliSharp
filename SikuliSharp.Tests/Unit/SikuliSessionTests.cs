@@ -30,23 +30,23 @@ namespace SikuliSharp.Tests.Unit
 			{
 				yield return new CommandTestData
 				{
-					Timeout = 0f,
-					ExpectedCommand = "print \"SIKULI#: YES\" if exists(::PATTERN::) else \"SIKULI#: NO\"",
-					Method = (session, pattern) => session.Exists(pattern)
-				};
-
-				yield return new CommandTestData
-				{
 					Timeout = 10.56789f,
-					ExpectedCommand = "print \"SIKULI#: YES\" if click(::PATTERN::, 10.5679) else \"SIKULI#: NO\"",
-					Method = (session, pattern) => session.Click(pattern, 10.56789f)
+					ExpectedCommand = "print \"SIKULI#: YES\" if exists(::PATTERN::, 10.5679) else \"SIKULI#: NO\"",
+					Method = (session, pattern) => session.Exists(pattern, 10.56789f)
 				};
 
 				yield return new CommandTestData
 				{
-					Timeout = 5,
-					ExpectedCommand = "print \"SIKULI#: YES\" if click(::PATTERN::.targetOffset(0, -100), 5) else \"SIKULI#: NO\"",
-					Method = (session, pattern) => session.Click(pattern, new Point(0, -100), 5)
+					Timeout = 0f,
+					ExpectedCommand = "print \"SIKULI#: YES\" if click(::PATTERN::) else \"SIKULI#: NO\"",
+					Method = (session, pattern) => session.Click(pattern)
+				};
+
+				yield return new CommandTestData
+				{
+					Timeout = 0f,
+					ExpectedCommand = "print \"SIKULI#: YES\" if click(::PATTERN::.targetOffset(0, -100)) else \"SIKULI#: NO\"",
+					Method = (session, pattern) => session.Click(pattern, new Point(0, -100))
 				};
 
 				yield return new CommandTestData

@@ -6,10 +6,10 @@ namespace SikuliSharp
 	public interface ISikuliSession : IDisposable
 	{
 		bool Exists(IPattern pattern, float timeoutInSeconds = 0);
-		bool Click(IPattern pattern, float timeoutInSeconds = 0);
-		bool Click(IPattern pattern, Point offset, float timeoutInSeconds = 0f);
-		bool DoubleClick(IPattern pattern, float timeoutInSeconds = 0);
-		bool DoubleClick(IPattern pattern, Point offset, float timeoutInSeconds = 0f);
+		bool Click(IPattern pattern);
+		bool Click(IPattern pattern, Point offset);
+		bool DoubleClick(IPattern pattern);
+		bool DoubleClick(IPattern pattern, Point offset);
 		bool Wait(IPattern pattern, float timeoutInSeconds = 0);
 		bool WaitVanish(IPattern pattern, float timeoutInSeconds = 0);
 		bool Type(string text);
@@ -31,24 +31,24 @@ namespace SikuliSharp
 			return RunCommand("exists", pattern, timeoutInSeconds);
 		}
 
-		public bool Click(IPattern pattern, float timeoutInSeconds = 0f)
+		public bool Click(IPattern pattern)
 		{
-			return RunCommand("click", pattern, timeoutInSeconds);
+			return RunCommand("click", pattern, 0);
 		}
 
-		public bool Click(IPattern pattern, Point offset, float timeoutInSeconds = 0f)
+		public bool Click(IPattern pattern, Point offset)
 		{
-			return RunCommand("click", new WithOffsetPattern(pattern, offset), timeoutInSeconds);
+			return RunCommand("click", new WithOffsetPattern(pattern, offset), 0);
 		}
 		
-		public bool DoubleClick(IPattern pattern, float timeoutInSeconds = 0f)
+		public bool DoubleClick(IPattern pattern)
 		{
-			return RunCommand("doubleClick", pattern, timeoutInSeconds);
+			return RunCommand("doubleClick", pattern, 0);
 		}
 
-		public bool DoubleClick(IPattern pattern, Point offset, float timeoutInSeconds = 0f)
+		public bool DoubleClick(IPattern pattern, Point offset)
 		{
-			return RunCommand("doubleClick", new WithOffsetPattern(pattern, offset), timeoutInSeconds);
+			return RunCommand("doubleClick", new WithOffsetPattern(pattern, offset), 0);
 		}
 
 		public bool Wait(IPattern pattern, float timeoutInSeconds = 0f)
@@ -75,7 +75,7 @@ namespace SikuliSharp
 			return result.Contains("SIKULI#: YES");
 		}
 
-		protected bool RunCommand(string command, IPattern pattern, float timeoutInSeconds)
+		protected bool RunCommand(string command, IPattern pattern, float commandParameter)
 		{
 			pattern.Validate();
 
@@ -83,14 +83,14 @@ namespace SikuliSharp
 				"print \"SIKULI#: YES\" if {0}({1}{2}) else \"SIKULI#: NO\"",
 				command,
 				pattern.ToSikuliScript(),
-				AddTimeout(timeoutInSeconds)
+				ToSukuliFloat(commandParameter)
 				);
 
-			var result = _runtime.Run(script, "SIKULI#: ", timeoutInSeconds);
+			var result = _runtime.Run(script, "SIKULI#: ", commandParameter);
 			return result.Contains("SIKULI#: YES");
 		}
 
-		private static string AddTimeout(float timeoutInSeconds)
+		private static string ToSukuliFloat(float timeoutInSeconds)
 		{
 			return timeoutInSeconds > 0f ? ", " + timeoutInSeconds.ToString("0.####") : "";
 		}
