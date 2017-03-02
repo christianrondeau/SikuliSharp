@@ -79,8 +79,13 @@ namespace SikuliSharp
 
 			var result = _asyncTwoWayStreamsHandler.ReadUntil(timeoutInSeconds, ErrorMarker, resultPrefix);
 
-			if(result.IndexOf(ErrorMarker, StringComparison.Ordinal) > -1)
-				throw new Exception("Sikuli Error: " + result + Environment.NewLine + string.Join(Environment.NewLine, _asyncTwoWayStreamsHandler.ReadUpToNow(0.1d)));
+			if (result.IndexOf(ErrorMarker, StringComparison.Ordinal) > -1)
+			{
+				result = result + Environment.NewLine + string.Join(Environment.NewLine, _asyncTwoWayStreamsHandler.ReadUpToNow(0.1d));
+				if (result.Contains("FindFailed"))
+					throw new SikuliFindFailedException(result);
+				throw new SikuliException(result);
+			}
 
 			return result;
 		}

@@ -40,6 +40,8 @@
     <Compile Include="Point.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sikuli.cs" />
+    <Compile Include="SikuliException.cs" />
+    <Compile Include="SikuliFindFailedException.cs" />
     <Compile Include="SikuliScriptProcessFactory.cs" />
     <Compile Include="SikuliRuntime.cs" />
     <Compile Include="SikuliSession.cs" />

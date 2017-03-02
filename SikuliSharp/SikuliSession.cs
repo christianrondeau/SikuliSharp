@@ -86,7 +86,7 @@ namespace SikuliSharp
 				ToSukuliFloat(commandParameter)
 				);
 
-			var result = _runtime.Run(script, "SIKULI#: ", commandParameter);
+			var result = _runtime.Run(script, "SIKULI#: ", commandParameter * 1.5d); // Failsafe
 			return result.Contains("SIKULI#: YES");
 		}
 

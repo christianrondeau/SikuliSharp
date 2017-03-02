@@ -48,11 +48,11 @@ namespace SikuliSharp.Tests
 
 					Assert.That(session.Exists(greenLabelPattern), Is.False, "Green label should still not exist (a 5s timer is shown)");
 
-					Assert.Throws<TimeoutException>(() => session.Wait(greenLabelPattern, 1), "Wait for green label, but not long enough should now work");
+					Assert.Throws<SikuliFindFailedException>(() => session.Wait(greenLabelPattern, 1), "Wait for green label, but not long enough should now work");
 
 					Assert.That(session.Wait(greenLabelPattern, 10), Is.True, "Wait for green label long enough should work");
 
-					Assert.That(session.Exists(greenLabelPattern), Is.True, "Green label should now exist");
+					Assert.That(session.Exists(greenLabelPattern, 10), Is.True, "Green label should now exist");
 
 					Assert.That(session.Type("x"), Is.True, "Type 'x' to exit");
 
