@@ -37,7 +37,7 @@ namespace SikuliSharp
 
 			_process = _sikuliScriptProcessFactory.Start("-i");
 
-			_asyncTwoWayStreamsHandler = _asyncDuplexStreamsHandlerFactory.Create(_process.StandardOutput, _process.StandardInput);
+			_asyncTwoWayStreamsHandler = _asyncDuplexStreamsHandlerFactory.Create(_process.StandardOutput, _process.StandardError, _process.StandardInput);
 
 			_asyncTwoWayStreamsHandler.ReadUntil(SikuliReadyTimeoutSeconds, InteractiveConsoleReadyMarker);
 		}
@@ -80,7 +80,7 @@ namespace SikuliSharp
 			var result = _asyncTwoWayStreamsHandler.ReadUntil(timeoutInSeconds, ErrorMarker, resultPrefix);
 
 			if(result.IndexOf(ErrorMarker, StringComparison.Ordinal) > -1)
-				throw new Exception("Sikuli Error: " + result);
+				throw new Exception("Sikuli Error: " + result + Environment.NewLine + string.Join(Environment.NewLine, _asyncTwoWayStreamsHandler.ReadUpToNow(0.1d)));
 
 			return result;
 		}

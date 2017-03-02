@@ -15,11 +15,11 @@ namespace SikuliSharp.Tests.Unit
 		[Test]
 		public void CanWrite()
 		{
-			var sr = new StreamReader(new MemoryStream());
+			var stdout = new StreamReader(new MemoryStream());
 			var sb = new StringBuilder();
-			var sw = new StringWriter(sb);
+			var stdin = new StringWriter(sb);
 
-			var handler = new AsyncTwoWayStreamsHandler(sr, sw);
+			var handler = new AsyncTwoWayStreamsHandler(stdout, new StringReader(""), stdin);
 
 			handler.WriteLine("Should end up in the StreamWriter");
 			handler.WriteLine("With a line break after each");
@@ -30,17 +30,29 @@ namespace SikuliSharp.Tests.Unit
 		[Test]
 		public void CanReadUntilStringIsFound()
 		{
-			var sr = new StringReader(String.Join(
+			var stdout = new StringReader(String.Join(
 				Environment.NewLine,
 				"This line should be ignored because it comes before",
 				"This line should be taken because it includes MARKER in it",
 				"This line should be ignored because it comes after"
-				));
-			var sw = new StringWriter();
+				) + Environment.NewLine);
+			var stdin = new StringWriter();
 
-			var handler = new AsyncTwoWayStreamsHandler(sr, sw);
+			var handler = new AsyncTwoWayStreamsHandler(stdout, new StringReader(""), stdin);
 
 			Assert.That(handler.ReadUntil(0, "MARKER"), Is.EqualTo("This line should be taken because it includes MARKER in it"));
+		}
+
+		[Test]
+		public void CanReadUntilStringIsFoundInError()
+		{
+			var stdout = new StringReader("This line should be ignored" + Environment.NewLine);
+			var stderr = new StringReader("This line should be taken because it includes MARKER in it" + Environment.NewLine);
+			var stdin = new StringWriter();
+
+			var handler = new AsyncTwoWayStreamsHandler(stdout, stderr, stdin);
+
+			Assert.That(handler.ReadUntil(0, "MARKER"), Is.EqualTo("[error] This line should be taken because it includes MARKER in it"));
 		}
 
 		[Test]
@@ -48,10 +60,10 @@ namespace SikuliSharp.Tests.Unit
 		public void ReadUntilTimeoutThrows()
 		{
 			var stream = new BlockingStream();
-			var sr = new StreamReader(stream);
-			var sw = new StringWriter();
+			var stdout = new StreamReader(stream);
+			var stdin = new StringWriter();
 
-			var handler = new AsyncTwoWayStreamsHandler(sr, sw);
+			var handler = new AsyncTwoWayStreamsHandler(stdout, new StringReader(""), stdin);
 
 			Assert.That(handler.ReadUntil(0.1, "MARKER"), Is.EqualTo("This line should be taken because it includes MARKER in it"));
 		}
@@ -59,23 +71,23 @@ namespace SikuliSharp.Tests.Unit
 		[Test]
 		public void WaitForExitExitsImmediatelyWhenNothingToWaitFor()
 		{
-			var sr = new StringReader("");
-			var sw = new StringWriter();
+			var stdout = new StringReader("");
+			var stdin = new StringWriter();
 
-			var handler = new AsyncTwoWayStreamsHandler(sr, sw);
+			var handler = new AsyncTwoWayStreamsHandler(stdout, new StringReader(""), stdin);
 
 			handler.WaitForExit();
 			Assert.Pass("Successfully skipped waiting since there was nothing to do");
 		}
 
 		[Test]
-		public void WaitForExitBlocksWhenStillReading()
+		public void WaitForExitBlockstdinhenStillReading()
 		{
 			var blockingStream = new BlockingStream();
-			var sr = new StreamReader(blockingStream);
-			var sw = new StringWriter();
+			var stdout = new StreamReader(blockingStream);
+			var stdin = new StringWriter();
 
-			var handler = new AsyncTwoWayStreamsHandler(sr, sw);
+			var handler = new AsyncTwoWayStreamsHandler(stdout, new StringReader(""), stdin);
 
 			var stopWatch = new Stopwatch();
 			stopWatch.Start();

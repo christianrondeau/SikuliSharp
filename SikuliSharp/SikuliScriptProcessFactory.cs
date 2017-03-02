@@ -15,18 +15,21 @@ namespace SikuliSharp
 		public Process Start(string args)
 		{
 			var javaPath = GuessJavaPath();
-
 			var sikuliHome = MakeEmptyNull(Environment.GetEnvironmentVariable("SIKULI_HOME"));
 			if (sikuliHome == null) throw new Exception("Environment variable SIKULI_HOME not set. Please verify that Sikuli is installed (sikuli-script.jar must be present) and create a SIKULI_HOME environment variable. You may need to restart your command prompt or IDE.");
-			
 			var sikuliScriptJarPath = DetectSikuliPath(sikuliHome);
+			var javaArguments = string.Format("-jar \"{0}\" {1}", sikuliScriptJarPath, args);
+
+#if (DEBUG)
+			Debug.WriteLine("Launching Sikuli: \"" + javaPath + "\" " + javaArguments);
+#endif
 
 			var process = new Process
 			{
 				StartInfo =
 				{
 					FileName = javaPath,
-					Arguments = string.Format("-jar \"{0}\" {1}", sikuliScriptJarPath, args),
+					Arguments = javaArguments,
 					CreateNoWindow = true,
 					WindowStyle = ProcessWindowStyle.Hidden,
 					UseShellExecute = false,

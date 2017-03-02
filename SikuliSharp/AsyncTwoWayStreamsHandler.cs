@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -9,38 +10,45 @@ namespace SikuliSharp
 {
 	public interface IAsyncDuplexStreamsHandlerFactory
 	{
-		IAsyncTwoWayStreamsHandler Create(TextReader output, TextWriter input);
+		IAsyncTwoWayStreamsHandler Create(TextReader stdout, TextReader stderr, TextWriter stdin);
 	}
 
 	public class AsyncDuplexStreamsHandlerFactory : IAsyncDuplexStreamsHandlerFactory
 	{
-		public IAsyncTwoWayStreamsHandler Create(TextReader output, TextWriter input)
+		public IAsyncTwoWayStreamsHandler Create(TextReader stdout, TextReader stderr, TextWriter stdin)
 		{
-			return new AsyncTwoWayStreamsHandler(output, input);
+			return new AsyncTwoWayStreamsHandler(stdout, stderr, stdin);
 		}
 	}
 
 	public interface IAsyncTwoWayStreamsHandler : IDisposable
 	{
 		string ReadUntil(double timeoutInSeconds, params string[] expectedStrings);
+		IEnumerable<string> ReadUpToNow(double timeoutInSeconds);
 		void WriteLine(string command);
 		void WaitForExit();
 	}
 
 	public class AsyncTwoWayStreamsHandler : IAsyncTwoWayStreamsHandler
 	{
-		private readonly TextWriter _input;
-		private readonly TextReader _output;
-		private readonly Task _task;
+		private readonly TextReader _stdout;
+		private readonly TextReader _stderr;
+		private readonly TextWriter _stdin;
+		private readonly Task _readStderrTask;
+		private readonly Task _readStdoutTask;
 		private readonly BlockingCollection<string> _pendingOutputLines = new BlockingCollection<string>();
 
-		public AsyncTwoWayStreamsHandler(TextReader output, TextWriter input)
+		public AsyncTwoWayStreamsHandler(TextReader stdout, TextReader stderr, TextWriter stdin)
 		{
-			_input = input;
-			_output = output;
+			_stdout = stdout;
+			_stderr = stderr;
+			_stdin = stdin;
 
-			_task = new Task(ReadLinesAsync);
-			_task.Start();
+			_readStdoutTask = new Task(ReadStdoutAsync);
+			_readStdoutTask.Start();
+
+			_readStderrTask = new Task(ReadStderrAsync);
+			_readStderrTask.Start();
 		}
 
 		public string ReadUntil(double timeoutInSeconds, params string[] expectedStrings)
@@ -66,29 +74,54 @@ namespace SikuliSharp
 			}
 		}
 
+		public IEnumerable<string> ReadUpToNow(double timeoutInSeconds)
+		{
+			while (true)
+			{
+				string line;
+				if (_pendingOutputLines.TryTake(out line, TimeSpan.FromSeconds(timeoutInSeconds)))
+					yield return line;
+				else
+					yield break;
+			}
+		}
+
 		public void WriteLine(string command)
 		{
-			_input.WriteLine(command);
+			_stdin.WriteLine(command);
 		}
 
 		public void WaitForExit()
 		{
-			_task.Wait();
+			_readStdoutTask.Wait();
+			_readStderrTask.Wait();
 		}
 
 		public void Dispose()
 		{
-			if (_task != null) _task.Dispose();
+			if (_readStdoutTask != null) _readStdoutTask.Dispose();
+			if (_readStderrTask != null) _readStderrTask.Dispose();
 		}
 
-		private void ReadLinesAsync()
+		private void ReadStdoutAsync()
+		{
+			ReadStdAsync(_stdout);
+		}
+
+		private void ReadStderrAsync()
+		{
+			ReadStdAsync(_stderr, "[error] ");
+		}
+
+		private void ReadStdAsync(TextReader output, string prefix = null)
 		{
 			string line;
-			while ((line = _output.ReadLine()) != null)
+			while ((line = output.ReadLine()) != null)
 			{
-				#if(DEBUG)
+				if (prefix != null) line = prefix + line;
+#if (DEBUG)
 				Debug.WriteLine("SIKULI> " + line);
-				#endif
+#endif
 				_pendingOutputLines.Add(line);
 			}
 		}
