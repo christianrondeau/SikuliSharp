@@ -13,7 +13,6 @@ namespace SikuliSharp
 	public class SikuliRuntime : ISikuliRuntime
 	{
 		private readonly IAsyncDuplexStreamsHandlerFactory _asyncDuplexStreamsHandlerFactory;
-		private bool _isRunning;
 		private Process _process;
 		private IAsyncTwoWayStreamsHandler _asyncTwoWayStreamsHandler;
 		private readonly ISikuliScriptProcessFactory _sikuliScriptProcessFactory;
@@ -33,30 +32,29 @@ namespace SikuliSharp
 
 		public void Start()
 		{
-			if (_isRunning) return;
+			if (_process != null) throw new InvalidOperationException("This Sikuli session has already been started");
 
 			_process = _sikuliScriptProcessFactory.Start("-i");
 
 			_asyncTwoWayStreamsHandler = _asyncDuplexStreamsHandlerFactory.Create(_process.StandardOutput, _process.StandardError, _process.StandardInput);
-
 			_asyncTwoWayStreamsHandler.ReadUntil(SikuliReadyTimeoutSeconds, InteractiveConsoleReadyMarker);
 		}
 
 		public void Stop(bool ignoreErrors = false)
 		{
-			if (!_isRunning) return;
+			if (_process == null) return;
 
 			_asyncTwoWayStreamsHandler.WriteLine(ExitCommand);
-			
-			if(!_process.WaitForExit(500))
-				_process.Kill();
 
-			if (!ignoreErrors)
+			if (!_process.HasExited)
 			{
-				var errors = _process.StandardError.ReadToEnd();
-				if (!String.IsNullOrEmpty(errors))
-					throw new Exception("Sikuli Errors: " + errors);
+				if (!_process.WaitForExit(500))
+					_process.Kill();
 			}
+
+			string errors = null;
+			if (!ignoreErrors)
+				errors = _process.StandardError.ReadToEnd();
 
 			_asyncTwoWayStreamsHandler.WaitForExit();
 
@@ -65,11 +63,15 @@ namespace SikuliSharp
 			_process.Dispose();
 			_process = null;
 
-			_isRunning = false;
+			if (!ignoreErrors && !String.IsNullOrEmpty(errors))
+				throw new SikuliException("Sikuli Errors: " + errors);
 		}
 
 		public string Run(string command, string resultPrefix, double timeoutInSeconds)
 		{
+			if(_process == null || _process.HasExited)
+				throw new InvalidOperationException("The Sikuli process is not running");
+
 			#if(DEBUG)
 			Debug.WriteLine(command);
 			#endif
@@ -92,20 +94,7 @@ namespace SikuliSharp
 
 		public void Dispose()
 		{
-			if (_process != null)
-			{
-				if (!_process.HasExited)
-					Stop(true);
-
-				_process.Dispose();
-				_process = null;
-			}
-
-			if (_asyncTwoWayStreamsHandler != null)
-			{
-				_asyncTwoWayStreamsHandler.Dispose();
-				_asyncTwoWayStreamsHandler = null;
-			}
+			Stop(true);
 		}
 	}
 }
