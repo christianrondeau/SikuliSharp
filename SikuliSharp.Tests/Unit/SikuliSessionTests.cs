@@ -30,7 +30,7 @@ namespace SikuliSharp.Tests.Unit
 			{
 				yield return new CommandTestData
 				{
-					Timeout = 10.56789f,
+					Timeout = 15.8518352508545f,
 					ExpectedCommand = "print \"SIKULI#: YES\" if exists(::PATTERN::, 10.5679) else \"SIKULI#: NO\"",
 					Method = (session, pattern) => session.Exists(pattern, 10.56789f)
 				};
@@ -51,7 +51,7 @@ namespace SikuliSharp.Tests.Unit
 
 				yield return new CommandTestData
 				{
-					Timeout = 9999f,
+					Timeout = 14998.5f,
 					ExpectedCommand = "print \"SIKULI#: YES\" if wait(::PATTERN::, 9999) else \"SIKULI#: NO\"",
 					Method = (session, pattern) => session.Wait(pattern, 9999f)
 				};
