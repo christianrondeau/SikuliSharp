@@ -8,7 +8,8 @@ namespace SikuliSharp
 		bool Exists(IPattern pattern, float timeoutInSeconds = 0);
 		bool Click(IPattern pattern);
 		bool Click(IPattern pattern, Point offset);
-		bool DoubleClick(IPattern pattern);
+        bool Click(ILocation point);
+        bool DoubleClick(IPattern pattern);
 		bool DoubleClick(IPattern pattern, Point offset);
 		bool Wait(IPattern pattern, float timeoutInSeconds = 0);
 		bool WaitVanish(IPattern pattern, float timeoutInSeconds = 0);
@@ -40,8 +41,13 @@ namespace SikuliSharp
 		{
 			return RunCommand("click", new WithOffsetPattern(pattern, offset), 0);
 		}
-		
-		public bool DoubleClick(IPattern pattern)
+
+        public bool Click(ILocation location)
+        {
+            return RunCommand("click", location, 0);
+        }
+
+        public bool DoubleClick(IPattern pattern)
 		{
 			return RunCommand("doubleClick", pattern, 0);
 		}
@@ -90,7 +96,19 @@ namespace SikuliSharp
 			return result.Contains("SIKULI#: YES");
 		}
 
-		private static string ToSukuliFloat(float timeoutInSeconds)
+        protected bool RunCommand(string command, ILocation location, float commandParameter)
+        {
+            var script = string.Format(
+                "print \"SIKULI#: YES\" if {0}({1}) else \"SIKULI#: NO\"",
+                command,
+                location.ToSikuliScript()
+                );
+
+            var result = _runtime.Run(script, "SIKULI#: ", commandParameter * 1.5d); // Failsafe
+            return result.Contains("SIKULI#: YES");
+        }
+
+        private static string ToSukuliFloat(float timeoutInSeconds)
 		{
 			return timeoutInSeconds > 0f ? ", " + timeoutInSeconds.ToString("0.####") : "";
 		}
@@ -99,5 +117,7 @@ namespace SikuliSharp
 		{
 			_runtime.Stop();
 		}
-	}
+
+        
+    }
 }
