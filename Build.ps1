@@ -6,12 +6,7 @@ Write-Host "Building SikuliSharp..." -ForegroundColor Green
 # ==================================== Functions
 
 Function GetMSBuildExe {
-	[CmdletBinding()]
-	$DotNetVersion = "4.0"
-	$RegKey = "HKLM:\software\Microsoft\MSBuild\ToolsVersions\$DotNetVersion"
-	$RegProperty = "MSBuildToolsPath"
-	$MSBuildExe = Join-Path -Path (Get-ItemProperty $RegKey).$RegProperty -ChildPath "msbuild.exe"
-	Return $MSBuildExe
+	Return "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\MSBuild.exe"
 }
 
 # ==================================== Variables
