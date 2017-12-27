@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>SikuliSharp</id>
-    <version>1.2.0</version>
+    <version>1.3.0</version>
     <title>SikuliSharp</title>
     <authors>Christian Rondeau</authors>
     <owners>Christian Rondeau</owners>
@@ -12,7 +12,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A fast and simple Sikuli wrapper for .Net</description>
     <summary>Uses the Sikuli interactive console for faster results; you can run commands, or run a .sikuli project. Requires to have Java and Sikuli installed.</summary>
-    <releaseNotes>Better Sikuli errors handling</releaseNotes>
+    <releaseNotes>Support for targeting location</releaseNotes>
     <copyright>Copyright Christian Rondeau 2017</copyright>
     <tags>sikuli automation unit test functional automated</tags>
   </metadata>
