@@ -32,3 +32,4 @@ _ReSharper*/
 packages/
 *.nupkg
 !.nuget/NuGet.exe
+.vs/
