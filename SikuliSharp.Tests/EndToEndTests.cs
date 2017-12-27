@@ -24,7 +24,7 @@ namespace SikuliSharp.Tests
 		{
 			using (var session = Sikuli.CreateSession())
 			{
-				using (ResourcesUtil.StartTestApplication())
+				using (var app = ResourcesUtil.StartTestApplication())
 				{
 					var redLabelPattern = Patterns.FromFile(ResourcesUtil.RedLabelPatternPath, 0.9f);
 					var greenLabelPattern = Patterns.FromFile(ResourcesUtil.GreenLabelPatternPath, 0.9f);
@@ -39,6 +39,11 @@ namespace SikuliSharp.Tests
 					Assert.That(session.Click(testButtonPattern, new Point(125, 0)), Is.True, "Click on the offset button by offsetting from the test button");
 
 					Assert.That(session.Exists(whiteOffsetLabelPattern), Is.True, "White offset label should exist");
+
+					var appLocation = app.GetWindowLocation();
+					Assert.That(session.Click(new Location(appLocation.X + 350, appLocation.Y + 100)), Is.True, "Click on offset button by location");
+
+					Assert.That(session.Exists(blackOffsetLabelPattern), Is.True, "Black offset label should exist");
 
 					Assert.That(session.Wait(redLabelPattern), Is.True, "Red label should exist");
 

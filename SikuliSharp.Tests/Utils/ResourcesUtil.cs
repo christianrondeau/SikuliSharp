@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using NUnit.Framework;
 
 namespace SikuliSharp.Tests.Utils
@@ -42,11 +43,29 @@ namespace SikuliSharp.Tests.Utils
 
 		public class TestApplication : IDisposable
 		{
+			[DllImport("user32.dll")]
+			public static extern bool GetWindowRect(IntPtr hwnd, ref Rect rectangle);
+
+			public struct Rect
+			{
+				public int Left { get; set; }
+				public int Top { get; set; }
+				public int Right { get; set; }
+				public int Bottom { get; set; }
+			}
+
 			private readonly Process _process;
 
 			public TestApplication(Process process)
 			{
 				_process = process;
+			}
+
+			public Point GetWindowLocation()
+			{
+				var rect = new Rect();
+				GetWindowRect(_process.MainWindowHandle, ref rect);
+				return new Point(rect.Left, rect.Top);
 			}
 
 			public void Dispose()

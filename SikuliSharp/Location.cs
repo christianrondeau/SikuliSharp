@@ -13,16 +13,21 @@ namespace SikuliSharp
 
     public class Location : ILocation
     {
-        private Point point;
+        private Point _point;
+
+	    public Location(int x, int y)
+			: this(new Point(x, y))
+		{
+		}
 
         public Location(Point pt)
         {
-            point = pt;
+            _point = pt;
         }
 
         public string ToSikuliScript()
         {
-            return "Location(" + point.X + "," + point.Y + ")";
+            return "Location(" + _point.X + "," + _point.Y + ")";
         }
     }
 }
