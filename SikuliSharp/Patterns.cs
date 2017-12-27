@@ -12,6 +12,11 @@ namespace SikuliSharp
 		{
 			return new FilePattern(path, similarity);
 		}
+
+		public static IPattern Location(int x, int y)
+		{
+			return new Location(x, y);
+		}
 	}
 
 	public interface IPattern
@@ -27,8 +32,8 @@ namespace SikuliSharp
 
 		public FilePattern(string path, float similarity)
 		{
-			if (path == null) throw new ArgumentNullException("path");
-			if (similarity < 0 || similarity > 1) throw new ArgumentOutOfRangeException("similarity", similarity, "similarity must be between 0 and 1");
+			if (path == null) throw new ArgumentNullException(nameof(path));
+			if (similarity < 0 || similarity > 1) throw new ArgumentOutOfRangeException(nameof(similarity), similarity, "similarity must be between 0 and 1");
 
 			_path = path;
 			_similarity = similarity;
@@ -53,7 +58,7 @@ namespace SikuliSharp
 
 		public WithOffsetPattern(IPattern pattern, Point offset)
 		{
-			if (pattern == null) throw new ArgumentNullException("pattern");
+			if (pattern == null) throw new ArgumentNullException(nameof(pattern));
 			_pattern = pattern;
 			_offset = offset;
 		}
@@ -68,7 +73,33 @@ namespace SikuliSharp
 
 		public string ToSikuliScript()
 		{
-			return string.Format("{0}.targetOffset({1}, {2})", _pattern.ToSikuliScript(), _offset.X, _offset.Y);
+			return $"{_pattern.ToSikuliScript()}.targetOffset({_offset.X}, {_offset.Y})";
 		}
 	}
+
+    public class Location : IPattern
+    {
+        private Point _point;
+
+	    public Location(int x, int y)
+			: this(new Point(x, y))
+		{
+		}
+
+        public Location(Point pt)
+        {
+            _point = pt;
+        }
+
+	    public void Validate()
+	    {
+		    if(_point.X < 0 || _point.Y < 0)
+				throw new Exception("Cannot target a negative position");
+	    }
+
+	    public string ToSikuliScript()
+        {
+            return $"Location({_point.X},{_point.Y})";
+        }
+    }
 }

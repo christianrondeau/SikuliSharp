@@ -36,7 +36,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AsyncTwoWayStreamsHandler.cs" />
-    <Compile Include="Location.cs" />
     <Compile Include="Patterns.cs" />
     <Compile Include="Point.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
