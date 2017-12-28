@@ -77,6 +77,20 @@ namespace SikuliSharp.Tests.Unit
                     ExpectedCommand = "print \"SIKULI#: YES\" if hover(::PATTERN::.targetOffset(0, -100)) else \"SIKULI#: NO\"",
                     Method = (session, pattern) => session.Hover(pattern, new Point(0, -100))
                 };
+
+                yield return new CommandTestData
+                {
+                    Timeout = 0f,
+                    ExpectedCommand = "print \"SIKULI#: YES\" if rightClick(::PATTERN::) else \"SIKULI#: NO\"",
+                    Method = (session, pattern) => session.RightClick(pattern)
+                };
+
+                yield return new CommandTestData
+                {
+                    Timeout = 0f,
+                    ExpectedCommand = "print \"SIKULI#: YES\" if rightClick(::PATTERN::.targetOffset(0, -100)) else \"SIKULI#: NO\"",
+                    Method = (session, pattern) => session.RightClick(pattern, new Point(0, -100))
+                };
             }
 		}
 
