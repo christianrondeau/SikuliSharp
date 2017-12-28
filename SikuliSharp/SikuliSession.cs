@@ -13,7 +13,9 @@ namespace SikuliSharp
 		bool Wait(IPattern pattern, float timeoutInSeconds = 0);
 		bool WaitVanish(IPattern pattern, float timeoutInSeconds = 0);
 		bool Type(string text);
-	}
+        bool Hover(IPattern pattern);
+        bool Hover(IPattern pattern, Point offset);
+    }
 
 	public class SikuliSession : ISikuliSession
 	{
@@ -75,7 +77,17 @@ namespace SikuliSharp
 			return result.Contains("SIKULI#: YES");
 		}
 
-		protected bool RunCommand(string command, IPattern pattern, float commandParameter)
+        public bool Hover(IPattern pattern)
+        {
+            return RunCommand("hover", pattern, 0);
+        }
+
+        public bool Hover(IPattern pattern, Point offset)
+        {
+            return RunCommand("hover", new WithOffsetPattern(pattern, offset), 0);
+        }
+
+        protected bool RunCommand(string command, IPattern pattern, float commandParameter)
 		{
 			pattern.Validate();
 
@@ -98,8 +110,6 @@ namespace SikuliSharp
 		public void Dispose()
 		{
 			_runtime.Stop();
-		}
-
-        
+		}        
     }
 }

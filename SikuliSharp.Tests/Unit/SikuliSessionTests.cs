@@ -63,7 +63,21 @@ namespace SikuliSharp.Tests.Unit
 					// ReSharper disable once RedundantArgumentDefaultValue
 					Method = (session, pattern) => session.WaitVanish(pattern, 0f)
 				};
-			}
+
+                yield return new CommandTestData
+                {
+                    Timeout = 0f,
+                    ExpectedCommand = "print \"SIKULI#: YES\" if hover(::PATTERN::) else \"SIKULI#: NO\"",
+                    Method = (session, pattern) => session.Hover(pattern)
+                };
+
+                yield return new CommandTestData
+                {
+                    Timeout = 0f,
+                    ExpectedCommand = "print \"SIKULI#: YES\" if hover(::PATTERN::.targetOffset(0, -100)) else \"SIKULI#: NO\"",
+                    Method = (session, pattern) => session.Hover(pattern, new Point(0, -100))
+                };
+            }
 		}
 
 		[SetUp]
@@ -134,8 +148,8 @@ namespace SikuliSharp.Tests.Unit
 			}
 		}
 
-		[Test, TestCaseSource("InvalidTypeTestSource"), ExpectedException(typeof(ArgumentException))]
-		public void TypeWithInvalidTextThrows(string text)
+        [Test, TestCaseSource("InvalidTypeTestSource"), ExpectedException(typeof(ArgumentException))]
+        public void TypeWithInvalidTextThrows(string text)
 		{
 			_session.Type(text);
 		}
