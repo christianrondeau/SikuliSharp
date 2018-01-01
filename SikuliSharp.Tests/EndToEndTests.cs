@@ -49,11 +49,11 @@ namespace SikuliSharp.Tests
 
 					Assert.That(session.Exists(greenLabelPattern), Is.False, "Green label should not exist yet");
 
-                    Assert.That(session.Hover(testButtonPattern), Is.True, "Hover over Test Button");
+					Assert.That(session.Hover(testButtonPattern), Is.True, "Hover over Test Button");
 
-                    Assert.That(session.Hover(new Location(appLocation.X + 350, appLocation.Y + 100)), Is.True, "Hover outside Test Button");
+					Assert.That(session.Hover(new Location(appLocation.X + 350, appLocation.Y + 100)), Is.True, "Hover outside Test Button");
 
-                    Assert.That(session.Click(testButtonPattern), Is.True, "Click on test button");
+					Assert.That(session.Click(testButtonPattern), Is.True, "Click on test button");
 
 					Assert.That(session.Exists(greenLabelPattern), Is.False, "Green label should still not exist (a 5s timer is shown)");
 
