@@ -18,12 +18,19 @@ namespace SikuliSharp
 		bool RightClick(IPattern pattern);
 		bool RightClick(IPattern pattern, Point offset);
 		bool DragDrop(IPattern fromPattern, IPattern toPattern);
+		bool Click(IRegion region);
+		bool DoubleClick(IRegion region);
+		bool Hover(IRegion region);
+		bool RightClick(IRegion region);
+		bool DragDrop(IRegion fromRegion, IRegion toRegion);
 	}
 
 	public class SikuliSession : ISikuliSession
 	{
 		private static readonly Regex InvalidTextRegex = new Regex(@"[\r\n\t\x00-\x1F]", RegexOptions.Compiled);
 		private readonly ISikuliRuntime _runtime;
+
+		//IPattern Commands
 
 		public SikuliSession(ISikuliRuntime sikuliRuntime)
 		{
@@ -140,6 +147,63 @@ namespace SikuliSharp
 		private static string ToSukuliFloat(float timeoutInSeconds)
 		{
 			return timeoutInSeconds > 0f ? ", " + timeoutInSeconds.ToString("0.####") : "";
+		}
+
+		//IRegion Commands
+
+		public bool Click(IRegion region)
+		{
+			return RunCommand("click", region, 0);
+		}
+
+		public bool DoubleClick(IRegion region)
+		{
+			return RunCommand("doubleClick", region, 0);
+		}
+
+		public bool Hover(IRegion region)
+		{
+			return RunCommand("hover", region, 0);
+		}
+
+		public bool RightClick(IRegion region)
+		{
+			return RunCommand("rightClick", region, 0);
+		}
+
+		public bool DragDrop(IRegion fromRegion, IRegion toRegion)
+		{
+			return RunCommand("dragDrop", fromRegion, toRegion, 0);
+		}
+
+		protected bool RunCommand(string command, IRegion region, float commandParameter)
+		{
+			region.Validate();
+
+			var script = string.Format(
+				"print \"SIKULI#: YES\" if {0}({1}) else \"SIKULI#: NO\"",
+				command,
+				region.ToSikuliScript()
+				);
+
+			var result = _runtime.Run(script, "SIKULI#: ", commandParameter * 1.5d); // Failsafe
+			return result.Contains("SIKULI#: YES");
+		}
+
+		protected bool RunCommand(string command, IRegion fromRegion, IRegion toRegion, float commandParameter)
+		{
+			fromRegion.Validate();
+			toRegion.Validate();
+
+			var script = string.Format(
+				"print \"SIKULI#: YES\" if {0}({1},{2}) else \"SIKULI#: NO\"",
+				command,
+				fromRegion.ToSikuliScript(),
+				toRegion.ToSikuliScript()
+				);
+
+			var result = _runtime.Run(script, "SIKULI#: ", commandParameter * 1.5d); // Failsafe
+			return result.Contains("SIKULI#: YES");
 		}
 
 		public void Dispose()
