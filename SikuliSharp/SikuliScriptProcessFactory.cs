@@ -20,7 +20,7 @@ namespace SikuliSharp
 			var sikuliHome = MakeEmptyNull(Environment.GetEnvironmentVariable("SIKULI_HOME"));
 			if (sikuliHome == null) throw new Exception("Environment variable SIKULI_HOME not set. Please verify that Sikuli is installed (sikuli-script.jar must be present) and create a SIKULI_HOME environment variable. You may need to restart your command prompt or IDE.");
 			var sikuliScriptJarPath = GetSikuliAndJythonPath(sikuliHome);
-			var javaArguments = string.Format("-cp \"{0}\" org.python.util.jython {1}", sikuliScriptJarPath, @"C:\SikuliX\main.py");
+			var javaArguments = string.Format("-cp \"{0}\" org.python.util.jython", sikuliScriptJarPath);
 
 #if (DEBUG)
 			Debug.WriteLine("Launching Sikuli: \"" + javaPath + "\" " + javaArguments);
