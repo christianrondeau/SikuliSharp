@@ -4,6 +4,19 @@
 
 Yet another implementation of a [Sikuli](http://www.sikulix.com/) wrapper for using it in .NET.
 
+## [NEW] SikuliX 1.1.4 support
+
+Version 1.1.4 has a bunch of changes, it also broke the '-i' argument for interactive console.  
+Instead, the console is launched using Jython Standalone jar.  
+Both of the following need to be present in SIKULI_HOME folder:  
+* [jython-standalone-2.7.1.jar](https://repo1.maven.org/maven2/org/python/jython-standalone/2.7.1/jython-standalone-2.7.1.jar)  
+* [sikulixapi.jar](https://raiman.github.io/SikuliX1/sikulixapi.jar)  
+
+For the time being, 1.1.4 session is launched using:  
+```c#
+ session = Sikuli.CreateSession114();
+ ```
+
 ## Why Another Sikuli Wrapper?
 
 There are already existing wrappers, [sikuli-integrator](https://code.google.com/p/sikuli-integrator/) and [sikuli4net](http://sourceforge.net/projects/sikuli4net/), but I had trouble running them, they use an additional level of wrapping, they do not seem very active, and especially they used a lot of static classes, which makes it difficult to extend. I then decided to try building an implementation myself.
