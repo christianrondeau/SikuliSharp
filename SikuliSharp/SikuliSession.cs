@@ -18,6 +18,8 @@ namespace SikuliSharp
 		bool RightClick(IPattern pattern);
 		bool RightClick(IPattern pattern, Point offset);
 		bool DragDrop(IPattern fromPattern, IPattern toPattern);
+		SikuliMatch Find(IPattern pattern);
+
 		bool Click(IRegion region);
 		bool DoubleClick(IRegion region);
 		bool Hover(IRegion region);
@@ -118,6 +120,12 @@ namespace SikuliSharp
 			return RunCommand("dragDrop", fromPattern, toPattern, 0);
 		}
 
+		public SikuliMatch Find(IPattern pattern)
+		{
+			var returnstring = RunCommandWithReturn("find", pattern, 0);
+			return new SikuliMatch(returnstring);
+		}
+
 		protected bool RunCommand(string command, IPattern pattern, float commandParameter)
 		{
 			pattern.Validate();
@@ -148,6 +156,23 @@ namespace SikuliSharp
 
 			var result = _runtime.Run(script, "SIKULI#: ", commandParameter * 1.5d); // Failsafe
 			return result.Contains("SIKULI#: YES");
+		}
+
+		protected string RunCommandWithReturn(string command, IPattern pattern, float commandParameter)
+		{
+			pattern.Validate();
+
+			var script = string.Format(
+				"print \"SIKULI#: \" + {0}({1}{2}).toString()",
+				command,
+				pattern.ToSikuliScript(),
+				ToSukuliFloat(commandParameter)
+				);
+
+			var result = _runtime.Run(script, "SIKULI#: ", commandParameter * 1.5d); // Failsafe
+			Console.WriteLine(result);
+			if (!result.Contains("SIKULI#:")) throw new Exception("Command failed");
+			return result;
 		}
 
 		private static string ToSukuliFloat(float timeoutInSeconds)

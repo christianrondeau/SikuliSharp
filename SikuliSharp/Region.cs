@@ -18,6 +18,11 @@ namespace SikuliSharp
 			return $"Region({_x}, {_y}, {_w}, {_h})";
 		}
 
+		public Region()
+		{
+
+		}
+
 		public Region(Region region)
 		{
 			_x = region.GetX();
