@@ -5,6 +5,11 @@ namespace SikuliSharp
 {
 	public static class Sikuli
 	{
+		public static ISikuliSession CreateSession114()
+		{
+			return new SikuliSession(CreateRuntime(),true);
+		}
+
 		public static ISikuliSession CreateSession()
 		{
 			return new SikuliSession(CreateRuntime());

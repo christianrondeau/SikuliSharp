@@ -6,6 +6,7 @@ namespace SikuliSharp
 	public interface ISikuliRuntime : IDisposable
 	{
 		void Start();
+		void Start114();
 		void Stop(bool ignoreErrors = false);
 		string Run(string command, string resultPrefix, double timeoutInSeconds);
 	}
@@ -18,6 +19,7 @@ namespace SikuliSharp
 		private readonly ISikuliScriptProcessFactory _sikuliScriptProcessFactory;
 
 		private const string InteractiveConsoleReadyMarker = "... use ctrl-d to end the session";
+		private const string InteractiveConsoleReadyMarker114 = "Use exit() or Ctrl-D (i.e. EOF) to exit";
 		private const string ErrorMarker = "[error]";
 		private const string ExitCommand = "exit()";
 		private const int SikuliReadyTimeoutSeconds = 30;
@@ -38,6 +40,19 @@ namespace SikuliSharp
 
 			_asyncTwoWayStreamsHandler = _asyncDuplexStreamsHandlerFactory.Create(_process.StandardOutput, _process.StandardError, _process.StandardInput);
 			_asyncTwoWayStreamsHandler.ReadUntil(SikuliReadyTimeoutSeconds, InteractiveConsoleReadyMarker);
+		}
+
+		public void Start114()
+		{
+			if (_process != null) throw new InvalidOperationException("This Sikuli session has already been started");
+
+			_process = _sikuliScriptProcessFactory.Start114();
+
+			_asyncTwoWayStreamsHandler = _asyncDuplexStreamsHandlerFactory.Create(_process.StandardOutput, _process.StandardError, _process.StandardInput);
+			//_asyncTwoWayStreamsHandler.ReadUntil(SikuliReadyTimeoutSeconds, InteractiveConsoleReadyMarker114);
+			//For SikuliX 1.1.4
+			_asyncTwoWayStreamsHandler.WriteLine("import org.sikuli.script.SikulixForJython");
+			_asyncTwoWayStreamsHandler.WriteLine("from sikuli.Sikuli import *");
 		}
 
 		public void Stop(bool ignoreErrors = false)

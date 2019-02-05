@@ -30,13 +30,19 @@ namespace SikuliSharp
 		private static readonly Regex InvalidTextRegex = new Regex(@"[\r\n\t\x00-\x1F]", RegexOptions.Compiled);
 		private readonly ISikuliRuntime _runtime;
 
-		//IPattern Commands
-
 		public SikuliSession(ISikuliRuntime sikuliRuntime)
 		{
 			_runtime = sikuliRuntime;
 			_runtime.Start();
 		}
+
+		public SikuliSession(ISikuliRuntime sikuliRuntime, bool Is114)
+		{
+			_runtime = sikuliRuntime;
+			_runtime.Start114();
+		}
+
+		//IPattern Commands
 
 		public bool Exists(IPattern pattern, float timeoutInSeconds = 0f)
 		{
