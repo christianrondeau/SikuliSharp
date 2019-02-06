@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace SikuliSharp
@@ -25,12 +26,18 @@ namespace SikuliSharp
 		bool Hover(IRegion region);
 		bool RightClick(IRegion region);
 		bool DragDrop(IRegion fromRegion, IRegion toRegion);
+		bool Highlight(IRegion region);
+		bool Highlight(IRegion region, string color);
+		bool Highlight(IRegion region, double seconds);
+		bool Highlight(IRegion region, double seconds, string color);
+
 	}
 
 	public class SikuliSession : ISikuliSession
 	{
 		private static readonly Regex InvalidTextRegex = new Regex(@"[\r\n\t\x00-\x1F]", RegexOptions.Compiled);
 		private readonly ISikuliRuntime _runtime;
+		private static readonly CultureInfo cult = CultureInfo.InvariantCulture;
 
 		public SikuliSession(ISikuliRuntime sikuliRuntime)
 		{
@@ -205,6 +212,44 @@ namespace SikuliSharp
 		public bool DragDrop(IRegion fromRegion, IRegion toRegion)
 		{
 			return RunCommand("dragDrop", fromRegion, toRegion, 0);
+		}
+
+		public bool Highlight(IRegion region)
+		{
+			return RunDotCommand("highlight", region, null, 0);
+		}
+
+		public bool Highlight(IRegion region, string color)
+		{
+			string paramString = String.Format("'{0}'", color);
+			return RunDotCommand("highlight", region, paramString, 0);
+		}
+
+		public bool Highlight(IRegion region, double seconds)
+		{
+			string paramString = seconds.ToString("0.####", cult);
+			return RunDotCommand("highlight", region, paramString, 0);
+		}
+
+		public bool Highlight(IRegion region, double seconds, string color)
+		{
+			string paramString = String.Format("{0}, '{1}'", seconds.ToString("0.####", cult), color);
+			return RunDotCommand("highlight", region, paramString, 0);
+		}
+
+		protected bool RunDotCommand(string command, IRegion region, string paramString, float commandParameter)
+		{
+			region.Validate();
+
+			var script = string.Format(
+				"print \"SIKULI#: YES\" if {0}.{1}({2}) else \"SIKULI#: NO\"",
+				region.ToSikuliScript(),
+				command,
+				paramString
+				);
+
+			var result = _runtime.Run(script, "SIKULI#: ", commandParameter * 1.5d); // Failsafe
+			return result.Contains("SIKULI#: YES");
 		}
 
 		protected bool RunCommand(string command, IRegion region, float commandParameter)
