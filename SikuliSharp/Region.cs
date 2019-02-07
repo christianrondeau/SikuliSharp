@@ -4,7 +4,7 @@ using System.IO;
 
 namespace SikuliSharp
 {
-	public class Region :IRegion
+	public class Region : IRegion
 	{
 		private int _x, _y, _w, _h;
 		//private SikuliSession session;
@@ -100,17 +100,17 @@ namespace SikuliSharp
 
 		public Location GetTopRight()
 		{
-			return new Location(_x + _w, _y);
+			return new Location(_x + _w - 1, _y);
 		}
 
 		public Location GetBottomLeft()
 		{
-			return new Location(_x, _y + _h);
+			return new Location(_x, _y + _h - 1);
 		}
 
 		public Location GetBottomRight()
 		{
-			return new Location(_x + _w, _y + _h);
+			return new Location(_x + _w - 1, _y + _h - 1);
 		}
 
 		public Region Offset(int x, int y)
@@ -123,12 +123,40 @@ namespace SikuliSharp
 			return new Region(_x + point.X, _y + point.Y, _w, _h);
 		}
 
-		//TODO:
-		// public Region Grow
-		// public Region Above
-		// public Region Below
-		// public Region Left
-		// public Region Right
+		public Region Grow(int range)
+		{
+			return new Region(_x - range, _y - range, _w + range, _h + range);
+		}
+
+		public Region Grow(int width, int height)
+		{
+			return new Region(_x - width, _y - height, _w + width, _h + height);
+		}
+
+		public Region Grow(int left, int right, int top, int bottom)
+		{
+			return new Region(_x - left, _y - top, _w + right, _h + bottom);
+		}
+
+		public Region Above(int range)
+		{
+			return new Region(_x, _y - range, _w, range);
+		}
+
+		public Region Below(int range)
+		{
+			return new Region(_x, _y + _h, _w, range);
+		}
+
+		public Region Left(int range)
+		{
+			return new Region(_x - range, _y, range, _w);
+		}
+
+		public Region Right(int range)
+		{
+			return new Region(_x + _w, _y, _h, range);
+		}
 	}
 
 	public interface IRegion
