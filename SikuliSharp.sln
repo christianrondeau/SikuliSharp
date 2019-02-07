@@ -1,20 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.329
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SikuliSharp", "SikuliSharp\SikuliSharp.csproj", "{A4DB5054-B4A1-4DCD-AFC6-91EFE9C25135}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SikuliSharp", "SikuliSharp\SikuliSharp.csproj", "{A4DB5054-B4A1-4DCD-AFC6-91EFE9C25135}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SikuliSharp.Tests", "SikuliSharp.Tests\SikuliSharp.Tests.csproj", "{2885B0E4-3876-441B-AC9D-95B597471743}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SikuliSharp.Tests", "SikuliSharp.Tests\SikuliSharp.Tests.csproj", "{2885B0E4-3876-441B-AC9D-95B597471743}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SikuliSharp.TestApplication", "SikuliSharp.TestApplication\SikuliSharp.TestApplication.csproj", "{1A2846ED-8C3B-4391-85A1-D5889F4D6C58}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{41618D63-8D96-4BCF-A7DC-D099C084F961}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\NuGet.Config = .nuget\NuGet.Config
-		.nuget\NuGet.exe = .nuget\NuGet.exe
-		.nuget\NuGet.targets = .nuget\NuGet.targets
-	EndProjectSection
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SikuliSharp.TestApplication", "SikuliSharp.TestApplication\SikuliSharp.TestApplication.csproj", "{1A2846ED-8C3B-4391-85A1-D5889F4D6C58}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{26DFFB58-AF2E-47E9-9C6F-C84DCCE4991B}"
 	ProjectSection(SolutionItems) = preProject
@@ -43,5 +36,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {33272092-2CF5-47DF-B1D6-5113E01C02F2}
 	EndGlobalSection
 EndGlobal
