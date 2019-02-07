@@ -5,11 +5,6 @@ namespace SikuliSharp
 {
 	public static class Sikuli
 	{
-		public static ISikuliSession CreateSession114()
-		{
-			return new SikuliSession(CreateRuntime(),true);
-		}
-
 		public static ISikuliSession CreateSession()
 		{
 			return new SikuliSession(CreateRuntime());
@@ -36,7 +31,8 @@ namespace SikuliSharp
 				throw new DirectoryNotFoundException(string.Format("Project not found in path '{0}'", projectPath));
 
 			var processFactory = new SikuliScriptProcessFactory();
-			using (var process = processFactory.Start(string.Format("-r {0} {1}", projectPath, args)))
+			var version = processFactory.GetSikuliVersion().WithProject(projectPath, args);
+			using (var process = processFactory.Start(version))
 			{
 				var output = process.StandardOutput.ReadToEnd();
 				process.WaitForExit();

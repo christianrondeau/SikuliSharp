@@ -1,29 +1,42 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using Microsoft.Win32;
 
 namespace SikuliSharp
 {
 	public interface ISikuliScriptProcessFactory
 	{
-		Process Start(string args);
-		Process Start114();
+		ISikuliVersion GetSikuliVersion();
+		Process Start(ISikuliVersion version);
 	}
 
 	public class SikuliScriptProcessFactory : ISikuliScriptProcessFactory
 	{
-		//For SikuliX 1.1.4
-		public Process Start114()
+		public ISikuliVersion GetSikuliVersion()
 		{
-			var javaPath = GuessJavaPath();
 			var sikuliHome = MakeEmptyNull(Environment.GetEnvironmentVariable("SIKULI_HOME"));
 			if (sikuliHome == null) throw new Exception("Environment variable SIKULI_HOME not set. Please verify that Sikuli is installed (sikuli-script.jar must be present) and create a SIKULI_HOME environment variable. You may need to restart your command prompt or IDE.");
-			var sikuliScriptJarPath = GetSikuliAndJythonPath(sikuliHome);
-			var javaArguments = string.Format("-cp \"{0}\" org.python.util.jython", sikuliScriptJarPath);
+			var jarFiles = Directory.GetFiles(sikuliHome, "*.jar");
+			var jarFilenames = jarFiles.Select(path => Path.GetFileName(path)).ToArray();
+
+			// Version 101
+			if (jarFilenames.Contains("sikuli-script.jar"))
+				return new Sikuli101Version(Path.Combine(sikuliHome, "sikuli-script.jar"));
+			if (jarFilenames.Contains("sikulix.jar"))
+				return new Sikuli110Version(Path.Combine(sikuliHome, "sikulix.jar"));
+			if (jarFilenames.Contains("sikulixapi.jar") && jarFilenames.Contains("jython-standalone-2.7.1.jar"))
+				return new Sikuli114Version(Path.Combine(sikuliHome, "sikulixapi.jar"), Path.Combine(sikuliHome, "jython-standalone-2.7.1.jar"));
+			throw new NotSupportedException(string.Format("Could not find a known Sikuli version in SIKULI_HOME: \"{0}\"", sikuliHome));
+		}
+
+		public Process Start(ISikuliVersion version)
+		{
+			var javaPath = GuessJavaPath();
 
 #if (DEBUG)
-			Debug.WriteLine("Launching Sikuli: \"" + javaPath + "\" " + javaArguments);
+			Debug.WriteLine("Launching Sikuli: \"" + javaPath + "\" " + version.Arguments);
 #endif
 
 			var process = new Process
@@ -31,7 +44,7 @@ namespace SikuliSharp
 				StartInfo =
 				{
 					FileName = javaPath,
-					Arguments = javaArguments,
+					Arguments = version.Arguments,
 					CreateNoWindow = true,
 					WindowStyle = ProcessWindowStyle.Hidden,
 					UseShellExecute = false,
@@ -44,66 +57,6 @@ namespace SikuliSharp
 			process.Start();
 
 			return process;
-		} 
-
-		public Process Start(string args)
-		{
-			var javaPath = GuessJavaPath();
-			var sikuliHome = MakeEmptyNull(Environment.GetEnvironmentVariable("SIKULI_HOME"));
-			if (sikuliHome == null) throw new Exception("Environment variable SIKULI_HOME not set. Please verify that Sikuli is installed (sikuli-script.jar must be present) and create a SIKULI_HOME environment variable. You may need to restart your command prompt or IDE.");
-			var sikuliScriptJarPath = DetectSikuliPath(sikuliHome);
-			var javaArguments = string.Format("-jar \"{0}\" {1}", sikuliScriptJarPath, args);
-
-#if (DEBUG)
-			Debug.WriteLine("Launching Sikuli: \"" + javaPath + "\" " + javaArguments);
-#endif
-
-			var process = new Process
-			{
-				StartInfo =
-				{
-					FileName = javaPath,
-					Arguments = javaArguments,
-					CreateNoWindow = true,
-					WindowStyle = ProcessWindowStyle.Hidden,
-					UseShellExecute = false,
-					RedirectStandardInput = true,
-					RedirectStandardError = true,
-					RedirectStandardOutput = true
-				}
-			};
-
-			process.Start();
-
-			return process;
-		}
-
-		private static string GetSikuliAndJythonPath(string sikuliHome)
-		{
-			var sikuliJarPath = Path.Combine(sikuliHome, "sikulixapi.jar");
-			if (File.Exists(sikuliJarPath))
-			{
-				var jythonJarPath = Path.Combine(sikuliHome, "jython-standalone-2.7.1.jar");
-				if (File.Exists(sikuliJarPath))
-					return sikuliJarPath + ";" + jythonJarPath;
-			}
-
-			throw new FileNotFoundException(
-				string.Format("Either sikulixapi.jar or jython-standalone-2.7.1.jar were not found in the path referenced in SIKULI_HOME environment variable \"{0}\"", sikuliHome));
-		}
-
-		private static string DetectSikuliPath(string sikuliHome)
-		{
-			var sikuliScript101JarPath = Path.Combine(sikuliHome, "sikuli-script.jar");
-			if (File.Exists(sikuliScript101JarPath))
-				return sikuliScript101JarPath;
-
-			var sikuliScript110JarPath = Path.Combine(sikuliHome, "sikulix.jar");
-			if (File.Exists(sikuliScript110JarPath))
-				return sikuliScript110JarPath;
-
-			throw new FileNotFoundException(
-				string.Format("Neither sikuli-script.jar nor sikulix.jar were found in the path referenced in SIKULI_HOME environment variable \"{0}\"", sikuliHome));
 		}
 
 		public static string GuessJavaPath()

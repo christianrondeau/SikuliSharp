@@ -36,19 +36,13 @@ namespace SikuliSharp
 	public class SikuliSession : ISikuliSession
 	{
 		private static readonly Regex InvalidTextRegex = new Regex(@"[\r\n\t\x00-\x1F]", RegexOptions.Compiled);
+		private static readonly CultureInfo InvariantCulture = CultureInfo.InvariantCulture;
 		private readonly ISikuliRuntime _runtime;
-		private static readonly CultureInfo cult = CultureInfo.InvariantCulture;
 
 		public SikuliSession(ISikuliRuntime sikuliRuntime)
 		{
 			_runtime = sikuliRuntime;
 			_runtime.Start();
-		}
-
-		public SikuliSession(ISikuliRuntime sikuliRuntime, bool Is114)
-		{
-			_runtime = sikuliRuntime;
-			_runtime.Start114();
 		}
 
 		//IPattern Commands
@@ -227,13 +221,13 @@ namespace SikuliSharp
 
 		public bool Highlight(IRegion region, double seconds)
 		{
-			string paramString = seconds.ToString("0.####", cult);
+			string paramString = seconds.ToString("0.####", InvariantCulture);
 			return RunDotCommand("highlight", region, paramString, 0);
 		}
 
 		public bool Highlight(IRegion region, double seconds, string color)
 		{
-			string paramString = String.Format("{0}, '{1}'", seconds.ToString("0.####", cult), color);
+			string paramString = String.Format("{0}, '{1}'", seconds.ToString("0.####", InvariantCulture), color);
 			return RunDotCommand("highlight", region, paramString, 0);
 		}
 

@@ -24,14 +24,16 @@ namespace SikuliSharp.Tests.Unit
 		public void ThrowsIfSikuliHomeIsNotSet()
 		{
 			Environment.SetEnvironmentVariable("SIKULI_HOME", null, EnvironmentVariableTarget.Process);
-			new SikuliScriptProcessFactory().Start("-h");
+			var processFactory = new SikuliScriptProcessFactory();
+			processFactory.Start(processFactory.GetSikuliVersion());
 		}
 
-		[Test, ExpectedException(typeof(FileNotFoundException), ExpectedMessage = @"Neither sikuli-script.jar nor sikulix.jar were found in the path referenced in SIKULI_HOME environment variable ""C:\Temp""")]
+		[Test, ExpectedException(typeof(NotSupportedException), ExpectedMessage = @"Could not find a known Sikuli version in SIKULI_HOME: ""C:\Temp""")]
 		public void ThrowsIfSikuliHomeIsSetAndFileDoesNotExist()
 		{
 			Environment.SetEnvironmentVariable("SIKULI_HOME", @"C:\Temp", EnvironmentVariableTarget.Process);
-			new SikuliScriptProcessFactory().Start("-h");
+			var processFactory = new SikuliScriptProcessFactory();
+			processFactory.Start(processFactory.GetSikuliVersion());
 		}
 	}
 }
