@@ -6,7 +6,7 @@
     <title>SikuliSharp</title>
     <authors>christian.rondeau</authors>
     <owners>christian.rondeau</owners>
-    <licenseUrl>https://github.com/christianrondeau/SikuliSharp/blob/master/LICENSE.md</licenseUrl>
+    <license type="expression">MIT</license>
     <projectUrl>https://github.com/christianrondeau/SikuliSharp</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/christianrondeau/SikuliSharp/master/Assets/Nuget.Icon.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
