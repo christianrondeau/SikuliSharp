@@ -127,4 +127,4 @@ Here are some improvement ideas:
 
 ## License
 
-Copyright (c) 2015 Christian Rondeau, [The MIT License](LICENSE.md)
+Copyright (c) 2019 Christian Rondeau, [The MIT License](LICENSE.md)
