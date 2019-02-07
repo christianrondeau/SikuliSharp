@@ -9,28 +9,26 @@ namespace SikuliSharp
 		bool Exists(IPattern pattern, float timeoutInSeconds = 0);
 		bool Click(IPattern pattern);
 		bool Click(IPattern pattern, Point offset);
+		bool Click(IRegion region);
 		bool DoubleClick(IPattern pattern);
 		bool DoubleClick(IPattern pattern, Point offset);
+		bool DoubleClick(IRegion region);
 		bool Wait(IPattern pattern, float timeoutInSeconds = 0);
 		bool WaitVanish(IPattern pattern, float timeoutInSeconds = 0);
 		bool Type(string text);
 		bool Hover(IPattern pattern);
 		bool Hover(IPattern pattern, Point offset);
+		bool Hover(IRegion region);
 		bool RightClick(IPattern pattern);
 		bool RightClick(IPattern pattern, Point offset);
-		bool DragDrop(IPattern fromPattern, IPattern toPattern);
-		SikuliMatch Find(IPattern pattern);
-
-		bool Click(IRegion region);
-		bool DoubleClick(IRegion region);
-		bool Hover(IRegion region);
 		bool RightClick(IRegion region);
+		bool DragDrop(IPattern fromPattern, IPattern toPattern);
 		bool DragDrop(IRegion fromRegion, IRegion toRegion);
 		bool Highlight(IRegion region);
 		bool Highlight(IRegion region, string color);
 		bool Highlight(IRegion region, double seconds);
 		bool Highlight(IRegion region, double seconds, string color);
-
+		Match Find(IPattern pattern);
 	}
 
 	public class SikuliSession : ISikuliSession
@@ -121,10 +119,10 @@ namespace SikuliSharp
 			return RunCommand("dragDrop", fromPattern, toPattern, 0);
 		}
 
-		public SikuliMatch Find(IPattern pattern)
+		public Match Find(IPattern pattern)
 		{
 			var returnstring = RunCommandWithReturn("find", pattern, 0);
-			return new SikuliMatch(returnstring);
+			return new Match(returnstring);
 		}
 
 		protected bool RunCommand(string command, IPattern pattern, float commandParameter)

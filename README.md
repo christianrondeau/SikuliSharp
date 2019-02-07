@@ -4,19 +4,6 @@
 
 Yet another implementation of a [Sikuli](http://www.sikulix.com/) wrapper for using it in .NET.
 
-## [NEW] SikuliX 1.1.4 support
-
-Version 1.1.4 has a bunch of changes, it also broke the '-i' argument for interactive console.  
-Instead, the console is launched using Jython Standalone jar.  
-Both of the following need to be present in SIKULI_HOME folder:  
-* [jython-standalone-2.7.1.jar](https://repo1.maven.org/maven2/org/python/jython-standalone/2.7.1/jython-standalone-2.7.1.jar)  
-* [sikulixapi.jar](https://raiman.github.io/SikuliX1/sikulixapi.jar)  
-
-For the time being, 1.1.4 session is launched using:  
-```c#
- session = Sikuli.CreateSession114();
- ```
-
 ## Why Another Sikuli Wrapper?
 
 There are already existing wrappers, [sikuli-integrator](https://code.google.com/p/sikuli-integrator/) and [sikuli4net](http://sourceforge.net/projects/sikuli4net/), but I had trouble running them, they use an additional level of wrapping, they do not seem very active, and especially they used a lot of static classes, which makes it difficult to extend. I then decided to try building an implementation myself.
@@ -26,20 +13,25 @@ There are already existing wrappers, [sikuli-integrator](https://code.google.com
 Check these steps first:
 
 1. [Download Java](http://java.com/en/download/)
-2. [Download Sikuli 1.1.0](https://launchpad.net/sikuli/sikulix/1.1.0), then [install it](http://www.sikulix.com/quickstart.html) - select the option to _run scripts from the command line_ - the file `sikuli-scripts.jar` must be installed
-3. Create an environment variable `SIKULI_HOME` that points to your Sikuli install folder
+2. [Download Sikuli 1.1.0](https://raiman.github.io/SikuliX1/downloads.html):
+	* [jython-standalone-2.7.1.jar](https://repo1.maven.org/maven2/org/python/jython-standalone/2.7.1/jython-standalone-2.7.1.jar)  
+	* [sikulixapi.jar](https://raiman.github.io/SikuliX1/sikulixapi.jar)  
+3. Create an environment variable `SIKULI_HOME` that points to the Sikuli folder that contains the .jar files
 
-Here is a simple example using [NUnit](http://www.nunit.org/):
+Here is a simple example:
 
 ```c#
 using(var session = Sikuli.CreateSession())
 {
   var pattern = Patterns.FromFile(@"C:\Patterns\MyPattern.png"); 
-  Assert.That(session.Exists(pattern), Is.True);
+  if(session.Exists(pattern))
+  {
+  	  Console.WriteLine("The pattern exists!");
+  }
 }
 ```
 
-You can also simply run a project:
+You can also simply run a project (1.0.1 and 1.1.0 only, 1.1.4 not supported yet):
 
 ```c#
 Sikuli.RunProject(@"C:\Projects\MyProject.sikuli");
@@ -47,7 +39,7 @@ Sikuli.RunProject(@"C:\Projects\MyProject.sikuli");
 
 ## How Does it Work
 
-A `SikuliSession` launches an instance of the Sikuli interactive script engine using `java.exe -jar sikuli-script.jar -i`. All commands are sent to the interactive console, and the output is then parsed.
+A `SikuliSession` launches an instance of the Sikuli interactive script engine using a Jython interactive console. All commands are sent to the console's standard input, and the output is then parsed.
 
 ## Documentation
 
@@ -73,12 +65,17 @@ using (var session = Sikuli.CreateSession())
 
 All commands run against the `ISikuliSession` instance. They also can receive a `timeoutSeconds` parameter. If left empty, commands will wait "forever".
 
-* `session.Exists(pattern, timeoutsSeconds = 0f)` checks if the pattern exists on the screen
-* `session.Click(pattern, timeoutsSeconds = 0f)` tries to click on the pattern if it exists on the screen
-* `session.Click(pattern, offset, timeoutsSeconds = 0f)` Click to the `Point offset` distance from the pattern
-* `session.Wait(pattern, timeoutsSeconds = 0f)` tries to click on the pattern if it exists on the screen
-* `session.WaitVanish(pattern, timeoutsSeconds = 0f)` waits for the pattern to disappear from the screen
-* `session.Type(text)` sends the characters to the application; don't forget to double-escape special characters (e.g. `"\\n"` should be `"\\\\n"` or `@"\\n"`)
+* `session.Exists` checks if the pattern exists on the screen
+* `session.Click` Click to the `Point offset` distance from the pattern
+* `session.DoubleClick` Double-click on the pattern if it exists on the screen
+* `session.RightClick` Right-click to the `Point offset` distance from the pattern
+* `session.Wait` tries to click on the pattern if it exists on the screen
+* `session.WaitVanish` waits for the pattern to disappear from the screen
+* `session.Type` sends the characters to the application; don't forget to double-escape special characters (e.g. `"\\n"` should be `"\\\\n"` or `@"\\n"`)
+* `session.Hover` Hover to the `Point offset` distance from the pattern
+* `session.DragDrop` Drags from a pattern to another
+* `session.Find` Drags from a pattern to another
+* `session.Highlight` Highlights an element on the screen
 
 ### `Patterns`
 

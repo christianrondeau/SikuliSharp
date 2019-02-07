@@ -1,13 +1,8 @@
-﻿using System;
-using System.Globalization;
-using System.IO;
-
-namespace SikuliSharp
+﻿namespace SikuliSharp
 {
 	public class Region : IRegion
 	{
 		private int _x, _y, _w, _h;
-		//private SikuliSession session;
 
 		public void Validate()
 		{

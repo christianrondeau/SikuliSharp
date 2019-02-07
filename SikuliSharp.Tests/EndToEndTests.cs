@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using NUnit.Framework;
 using SikuliSharp.Tests.Utils;
 
@@ -44,6 +45,8 @@ namespace SikuliSharp.Tests
 					Assert.That(session.Click(new Location(appLocation.X + 350, appLocation.Y + 100)), Is.True, "Click on offset button by location");
 
 					Assert.That(session.Exists(blackOffsetLabelPattern), Is.True, "Black offset label should exist");
+
+					session.Highlight(session.Find(blackOffsetLabelPattern), "blue");
 
 					Assert.That(session.Wait(redLabelPattern), Is.True, "Red label should exist");
 
