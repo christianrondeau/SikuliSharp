@@ -73,7 +73,10 @@ namespace SikuliSharp.Tests.Utils
 				if (!_process.HasExited)
 				{
 					_process.CloseMainWindow();
-					_process.WaitForExit();
+					if (!_process.WaitForExit(1000))
+					{
+						_process.Kill();
+					}
 				}
 
 				_process.Dispose();
