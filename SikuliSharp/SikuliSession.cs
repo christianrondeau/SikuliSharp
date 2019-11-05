@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
@@ -29,6 +30,8 @@ namespace SikuliSharp
 		bool Highlight(IRegion region, double seconds);
 		bool Highlight(IRegion region, double seconds, string color);
 		Match Find(IPattern pattern);
+		List<SikuliSharp.Match> FindAll(IPattern pattern);
+
 	}
 
 	public class SikuliSession : ISikuliSession
@@ -125,6 +128,16 @@ namespace SikuliSharp
 			return new Match(returnstring);
 		}
 
+		public List<SikuliSharp.Match> FindAll(IPattern pattern) {
+			var returnstring = RunFindAllCommandWithReturn("findAll", pattern, 0);
+			List<SikuliSharp.Match> resultlist = new List<SikuliSharp.Match>();
+			foreach (System.Text.RegularExpressions.Match m in Regex.Matches(returnstring, @"M\[.*?msec\]")) {
+				Console.WriteLine(m);
+				resultlist.Add(new SikuliSharp.Match(Convert.ToString(m)));
+			}
+			return resultlist;
+		}
+
 		protected bool RunCommand(string command, IPattern pattern, float commandParameter)
 		{
 			pattern.Validate();
@@ -168,6 +181,21 @@ namespace SikuliSharp
 				ToSukuliFloat(commandParameter)
 				);
 
+			var result = _runtime.Run(script, "SIKULI#: ", commandParameter * 1.5d); // Failsafe
+			Console.WriteLine(result);
+			if (!result.Contains("SIKULI#:")) throw new Exception("Command failed");
+			return result;
+		}
+
+		protected string RunFindAllCommandWithReturn(string command, IPattern pattern, float commandParameter) {
+			pattern.Validate();
+			var script = string.Format(
+				"print('SIKULI#: ' + ''.join(map(str, {0}({1}{2}))))",
+				command,
+				pattern.ToSikuliScript(),
+				ToSukuliFloat(commandParameter)
+				);
+			Console.WriteLine(script);
 			var result = _runtime.Run(script, "SIKULI#: ", commandParameter * 1.5d); // Failsafe
 			Console.WriteLine(result);
 			if (!result.Contains("SIKULI#:")) throw new Exception("Command failed");
