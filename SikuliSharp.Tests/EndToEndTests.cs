@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using NUnit.Framework;
 using SikuliSharp.Tests.Utils;
@@ -32,6 +32,7 @@ namespace SikuliSharp.Tests
 					var testButtonPattern = Patterns.FromFile(ResourcesUtil.TestButtonPatternPath, 0.9f);
 					var blackOffsetLabelPattern = Patterns.FromFile(ResourcesUtil.BlackOffsetLabelPatternPath, 0.9f);
 					var whiteOffsetLabelPattern = Patterns.FromFile(ResourcesUtil.WhiteOffsetLabelPatternPath, 0.9f);
+					var OffsetButtonPattern = Patterns.FromFile(ResourcesUtil.OffsetButtonPatternPath, 0.9f);
 
 					Assert.That(session.Wait(redLabelPattern), Is.True, "Wait for application startup");
 
@@ -47,6 +48,8 @@ namespace SikuliSharp.Tests
 					Assert.That(session.Exists(blackOffsetLabelPattern), Is.True, "Black offset label should exist");
 
 					session.Highlight(session.Find(blackOffsetLabelPattern), "blue");
+
+					session.Highlight(session.FindAll(OffsetButtonPattern)[0], "red");
 
 					Assert.That(session.Wait(redLabelPattern), Is.True, "Red label should exist");
 
