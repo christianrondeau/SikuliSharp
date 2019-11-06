@@ -74,7 +74,8 @@ All commands run against the `ISikuliSession` instance. They also can receive a 
 * `session.Type` sends the characters to the application; don't forget to double-escape special characters (e.g. `"\\n"` should be `"\\\\n"` or `@"\\n"`)
 * `session.Hover` Hover to the `Point offset` distance from the pattern
 * `session.DragDrop` Drags from a pattern to another
-* `session.Find` Drags from a pattern to another
+* `session.Find` Find best match for pattern
+* `session.FindAll` Find all matches for pattern
 * `session.Highlight` Highlights an element on the screen
 
 ### `Patterns`
