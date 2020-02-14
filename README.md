@@ -1,5 +1,9 @@
 # SikuliSharp
 
+*NOT MAINTAINED*
+
+I am not using this library anymore, and therefore it is not being actively maintained. I will however consider pull requests, but I will not implement new features.
+
 [![Join the chat at https://gitter.im/christianrondeau/SikuliSharp](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/christianrondeau/SikuliSharp?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Yet another implementation of a [Sikuli](http://www.sikulix.com/) wrapper for using it in .NET.
