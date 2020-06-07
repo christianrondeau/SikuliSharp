@@ -66,7 +66,7 @@ namespace SikuliSharp
 						   ?? MakeEmptyNull(GetJavaPathFromRegistry(RegistryView.Registry32));
 
 			if (String.IsNullOrEmpty(javaHome))
-				throw new Exception("Java path not found. Is it installed? If yes, set the JAVA_HOME environment vairable.");
+				throw new Exception("Java path not found. Is it installed? If yes, set the JAVA_HOME environment variable.");
 
 			var javaPath = Path.Combine(javaHome, "bin", "java.exe");
 
@@ -78,18 +78,32 @@ namespace SikuliSharp
 
 		public static string GetJavaPathFromRegistry(RegistryView view)
 		{
-			const string jreKey = "SOFTWARE\\JavaSoft\\Java Runtime Environment";
+			var jreKey = "SOFTWARE\\JavaSoft\\Java Runtime Environment";
 			using (var baseKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, view).OpenSubKey(jreKey))
 			{
-				if (baseKey == null)
-					return null;
-
-				var currentVersion = baseKey.GetValue("CurrentVersion").ToString();
-				using (var homeKey = baseKey.OpenSubKey(currentVersion))
+				if (baseKey != null)
 				{
-					if (homeKey != null) return homeKey.GetValue("JavaHome").ToString();
+					var currentVersion = baseKey.GetValue("CurrentVersion").ToString();
+					using (var homeKey = baseKey.OpenSubKey(currentVersion))
+					{
+						if (homeKey != null) return homeKey.GetValue("JavaHome").ToString();
+					}
 				}
 			}
+
+			jreKey = "SOFTWARE\\JavaSoft\\Java Development Kit";
+			using (var baseKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, view).OpenSubKey(jreKey))
+			{
+				if (baseKey != null)
+				{
+					var currentVersion = baseKey.GetValue("CurrentVersion").ToString();
+					using (var homeKey = baseKey.OpenSubKey(currentVersion))
+					{
+						if (homeKey != null) return homeKey.GetValue("JavaHome").ToString();
+					}
+				}
+			}
+
 			return null;
 		}
 
