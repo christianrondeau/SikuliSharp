@@ -18,6 +18,8 @@ namespace SikuliSharp
 		{
 			var sikuliHome = MakeEmptyNull(Environment.GetEnvironmentVariable("SIKULI_HOME"));
 			if (sikuliHome == null) throw new Exception("Environment variable SIKULI_HOME not set. Please verify that Sikuli is installed (sikuli-script.jar must be present) and create a SIKULI_HOME environment variable. You may need to restart your command prompt or IDE.");
+
+			sikuliHome = Environment.ExpandEnvironmentVariables(sikuliHome);
 			var jarFiles = Directory.GetFiles(sikuliHome, "*.jar");
 			var jarFilenames = jarFiles.Select(path => Path.GetFileName(path)).ToArray();
 

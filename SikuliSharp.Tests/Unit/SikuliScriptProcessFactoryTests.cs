@@ -28,12 +28,13 @@ namespace SikuliSharp.Tests.Unit
 			processFactory.Start(processFactory.GetSikuliVersion());
 		}
 
-		[Test, ExpectedException(typeof(NotSupportedException), ExpectedMessage = @"Could not find a known Sikuli version in SIKULI_HOME: ""C:\Temp""")]
+		[Test]
 		public void ThrowsIfSikuliHomeIsSetAndFileDoesNotExist()
 		{
-			Environment.SetEnvironmentVariable("SIKULI_HOME", @"C:\Temp", EnvironmentVariableTarget.Process);
+			Environment.SetEnvironmentVariable("SIKULI_HOME", "%USERPROFILE%", EnvironmentVariableTarget.Process);
 			var processFactory = new SikuliScriptProcessFactory();
-			processFactory.Start(processFactory.GetSikuliVersion());
+			var ex = Assert.Throws<NotSupportedException>(() => processFactory.Start(processFactory.GetSikuliVersion()));
+			Assert.That(ex.Message.StartsWith("Could not find a known Sikuli version in SIKULI_HOME"));
 		}
 	}
 }
