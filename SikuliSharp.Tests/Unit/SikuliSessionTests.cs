@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -31,7 +32,7 @@ namespace SikuliSharp.Tests.Unit
 				yield return new CommandTestData
 				{
 					Timeout = 15.8518352508545f,
-					ExpectedCommand = "print \"SIKULI#: YES\" if exists(::PATTERN::, 10.5679) else \"SIKULI#: NO\"",
+					ExpectedCommand = "print \"SIKULI#: YES\" if exists(::PATTERN::, " + string.Format(Thread.CurrentThread.CurrentCulture, "{0:00.0000}", 10.56789f) + ") else \"SIKULI#: NO\"",
 					Method = (session, pattern) => session.Exists(pattern, 10.56789f)
 				};
 
